@@ -1,0 +1,101 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #C0392B;
+  --color-primary-hover: #962D22;
+  --color-primary-light: #FDEDEC;
+  --color-app-bg: #FFF8F6;
+  
+  /* Cream statuses and other modern tokens */
+  --color-status-empty-bg: #FAF6EE;
+  --color-status-empty-border: #E2D9C8;
+  --color-status-dining-bg: #FDEDEC;
+  --color-status-dining-border: #E6B0AA;
+  --color-status-dining-text: #922B21;
+  --color-status-waiting-bg: #FEF9E7;
+  --color-status-waiting-border: #F7DC6F;
+  --color-status-waiting-text: #B7950B;
+
+  --animate-blink: blink 1.5s infinite ease-in-out;
+  --animate-slide-up: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-fade-in: fadeIn 0.2s ease-out;
+
+  @keyframes blink {
+    0%, 100% { 
+      border-color: rgba(243, 156, 18, 0.3); 
+      box-shadow: 0 0 0 0px rgba(243, 156, 18, 0); 
+    }
+    50% { 
+      border-color: rgba(243, 156, 18, 1); 
+      box-shadow: 0 0 10px 2px rgba(243, 156, 18, 0.45); 
+    }
+  }
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+}
+
+:root {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: #FFF8F6;
+  color: #2C3E50;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Outfit', sans-serif;
+}
+
+/* Custom Glassmorphism styles and transitions */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(192, 57, 43, 0.08);
+}
+
+.shadow-premium {
+  box-shadow: 0 10px 30px -10px rgba(192, 57, 43, 0.06), 
+              0 1px 3px 0 rgba(192, 57, 43, 0.02);
+}
+
+.shadow-premium-lg {
+  box-shadow: 0 20px 40px -15px rgba(192, 57, 43, 0.12), 
+              0 1px 5px 0 rgba(192, 57, 43, 0.04);
+}
+
+/* Touch feedback helper */
+.active-press:active {
+  transform: scale(0.97);
+  transition: transform 0.1s ease;
+}
+
+/* Scrollbar styles */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #FFF8F6;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #E6B0AA;
+  border-radius: 99px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #C0392B;
+}
