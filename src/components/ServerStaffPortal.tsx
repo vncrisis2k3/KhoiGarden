@@ -1,21 +1,14 @@
 import { useState } from 'react'
 import {
-  ChefHat,
   Utensils,
-  Flame,
   Search,
   Bell,
   Plus,
-  Minus,
   CheckCircle,
   X,
-  CreditCard,
-  Clock,
-  Coffee,
   Check,
   ClipboardList,
-  AlertCircle,
-  RefreshCw
+  AlertCircle
 } from 'lucide-react'
 
 // Define data models

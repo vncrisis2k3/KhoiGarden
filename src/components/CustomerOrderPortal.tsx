@@ -7,7 +7,6 @@ import {
   Bell,
   ShoppingCart,
   Plus,
-  Minus,
   CheckCircle,
   X,
   CreditCard,
@@ -28,6 +27,7 @@ interface OrderItem {
   price: number
   quantity: number
   category: 'mains' | 'appetizers' | 'drinks'
+  status?: 'pending' | 'cooking' | 'served'
 }
 
 type TableStatus = 'EMPTY' | 'DINING' | 'WAITING_FOOD'
