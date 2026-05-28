@@ -2,20 +2,20 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #C0392B;
-  --color-primary-hover: #962D22;
-  --color-primary-light: #FDEDEC;
-  --color-app-bg: #FFF8F6;
+  --color-primary: #DC2626;
+  --color-primary-hover: #B91C1C;
+  --color-primary-light: #FEF2F2;
+  --color-app-bg: #FFFFFF;
   
-  /* Cream statuses and other modern tokens */
-  --color-status-empty-bg: #FAF6EE;
-  --color-status-empty-border: #E2D9C8;
-  --color-status-dining-bg: #FDEDEC;
-  --color-status-dining-border: #E6B0AA;
-  --color-status-dining-text: #922B21;
-  --color-status-waiting-bg: #FEF9E7;
-  --color-status-waiting-border: #F7DC6F;
-  --color-status-waiting-text: #B7950B;
+  /* Luxury statuses and other modern tokens */
+  --color-status-empty-bg: #FFFFFF;
+  --color-status-empty-border: #FCA5A5;
+  --color-status-dining-bg: #DC2626;
+  --color-status-dining-border: #B91C1C;
+  --color-status-dining-text: #FFFFFF;
+  --color-status-waiting-bg: #FEF2F2;
+  --color-status-waiting-border: #FCA5A5;
+  --color-status-waiting-text: #DC2626;
 
   --animate-blink: blink 1.5s infinite ease-in-out;
   --animate-slide-up: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -23,12 +23,12 @@
 
   @keyframes blink {
     0%, 100% { 
-      border-color: rgba(243, 156, 18, 0.3); 
-      box-shadow: 0 0 0 0px rgba(243, 156, 18, 0); 
+      border-color: rgba(220, 38, 38, 0.15); 
+      box-shadow: 0 0 0 0px rgba(220, 38, 38, 0); 
     }
     50% { 
-      border-color: rgba(243, 156, 18, 1); 
-      box-shadow: 0 0 10px 2px rgba(243, 156, 18, 0.45); 
+      border-color: rgba(220, 38, 38, 0.6); 
+      box-shadow: 0 0 8px 1px rgba(220, 38, 38, 0.12); 
     }
   }
   @keyframes slideUp {
@@ -43,8 +43,8 @@
 
 :root {
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  background-color: #FFF8F6;
-  color: #2C3E50;
+  background-color: #FFFFFF;
+  color: #1A1A1A;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -54,25 +54,69 @@ body {
   min-height: 100vh;
 }
 
+html,
+body,
+#root {
+  width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+button,
+input,
+select,
+textarea {
+  min-width: 0;
+}
+
+table {
+  min-width: max-content;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .fixed.bottom-6.right-6,
+  .fixed.bottom-6.left-6 {
+    left: 1rem !important;
+    right: 1rem !important;
+    max-width: calc(100vw - 2rem) !important;
+  }
+
+  .rounded-3xl {
+    border-radius: 1.25rem;
+  }
+}
+
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Outfit', sans-serif;
 }
 
 /* Custom Glassmorphism styles and transitions */
 .glass-panel {
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(192, 57, 43, 0.08);
+  border: 1px solid rgba(220, 38, 38, 0.1);
 }
 
 .shadow-premium {
-  box-shadow: 0 10px 30px -10px rgba(192, 57, 43, 0.06), 
-              0 1px 3px 0 rgba(192, 57, 43, 0.02);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.04), 
+              0 2px 6px -1px rgba(0, 0, 0, 0.02);
 }
 
 .shadow-premium-lg {
-  box-shadow: 0 20px 40px -15px rgba(192, 57, 43, 0.12), 
-              0 1px 5px 0 rgba(192, 57, 43, 0.04);
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.06), 
+              0 4px 12px -2px rgba(0, 0, 0, 0.03);
 }
 
 /* Touch feedback helper */
@@ -88,14 +132,180 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 ::-webkit-scrollbar-track {
-  background: #FFF8F6;
+  background: #FFFFFF;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #E6B0AA;
+  background: #E4E4E7;
   border-radius: 99px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #C0392B;
+  background: #DC2626;
+}
+
+/* Red/white application palette with black toolbar surfaces. */
+body {
+  background: #FFFFFF;
+}
+
+:is(#root > div > header, #root > div > main > header, #root > div > nav.fixed.bottom-0, #root > div > aside.w-64, #root > div > aside.admin-sidebar) {
+  background-color: #09090B !important;
+  border-color: rgba(220, 38, 38, 0.45) !important;
+  color: #FFFFFF !important;
+}
+
+:is(#root > div > header, #root > div > main > header, #root > div > nav.fixed.bottom-0, #root > div > aside.w-64, #root > div > aside.admin-sidebar) * {
+  color: #FFFFFF !important;
+}
+
+:is(#root > div > header, #root > div > main > header) input,
+:is(#root > div > header, #root > div > main > header) select,
+:is(#root > div > header, #root > div > main > header) textarea,
+:is(#root > div > header, #root > div > main > header) option {
+  background-color: #FFFFFF !important;
+  color: #18181B !important;
+  border-color: #FCA5A5 !important;
+}
+
+:is(#root > div > header, #root > div > main > header, #root > div > nav.fixed.bottom-0, #root > div > aside.w-64, #root > div > aside.admin-sidebar) button:not(.bg-primary) {
+  background-color: #18181B !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+  color: #FFFFFF !important;
+}
+
+:is(#root > div > header, #root > div > main > header, #root > div > nav.fixed.bottom-0, #root > div > aside.w-64, #root > div > aside.admin-sidebar) button:not(.bg-primary):hover {
+  background-color: #27272A !important;
+}
+
+/* Non-toolbar bars keep the red/white visual system. */
+#root > div header:not(:is(#root > div > header, #root > div > main > header)) {
+  background-color: #FFFFFF !important;
+  border-color: #FCA5A5 !important;
+  color: #18181B !important;
+}
+
+main,
+.bg-app-bg,
+.bg-\[\#FFF8F6\],
+.bg-\[\#FAF6EE\],
+.bg-\[\#FAF6EE\]\/20,
+.bg-\[\#FAF6EE\]\/50 {
+  background-color: #FFFFFF !important;
+}
+
+.border-\[\#E2D9C8\],
+.border-\[\#E2D9C8\]\/40,
+.border-\[\#E2D9C8\]\/60,
+.border-\[\#E2D9C8\]\/80,
+.border-\[\#C0392B\]\/5,
+.border-\[\#C0392B\]\/10,
+.border-\[\#C0392B\]\/20 {
+  border-color: #FCA5A5 !important;
+}
+
+.text-\[\#C0392B\] {
+  color: #DC2626 !important;
+}
+
+.bg-\[\#C0392B\]\/10 {
+  background-color: #FEF2F2 !important;
+}
+
+#root > div:not(:has(> aside.w-64)):not(:has(> aside.admin-sidebar)) button.bg-white {
+  color: #18181B !important;
+}
+
+#root > div:not(:has(> aside.w-64)):not(:has(> aside.admin-sidebar)) .border-\[\#E2D9C8\],
+#root > div:not(:has(> aside.w-64)):not(:has(> aside.admin-sidebar)) .border-\[\#E2D9C8\]\/40,
+#root > div:not(:has(> aside.w-64)):not(:has(> aside.admin-sidebar)) .border-\[\#E2D9C8\]\/60,
+#root > div:not(:has(> aside.w-64)):not(:has(> aside.admin-sidebar)) .border-\[\#E2D9C8\]\/80,
+#root > div:not(:has(> aside.w-64)):not(:has(> aside.admin-sidebar)) .border-status-empty-border {
+  border-color: #FB923C !important;
+}
+
+/* Toolbar contrast guard: keep controls readable on black toolbar surfaces. */
+:is(#root > div > header, #root > div > main > header, #root > div > nav.fixed.bottom-0, #root > div > aside.w-64, #root > div > aside.admin-sidebar) button {
+  color: #FFFFFF !important;
+}
+
+:is(#root > div > header, #root > div > main > header, #root > div > nav.fixed.bottom-0, #root > div > aside.w-64, #root > div > aside.admin-sidebar) button * {
+  color: inherit !important;
+  border-color: inherit;
+  stroke: currentColor;
+}
+
+:is(#root > div > header, #root > div > main > header, #root > div > nav.fixed.bottom-0, #root > div > aside.w-64, #root > div > aside.admin-sidebar) button.bg-primary {
+  background-color: #DC2626 !important;
+  border-color: #DC2626 !important;
+  color: #FFFFFF !important;
+}
+
+button:is(.bg-black, .bg-zinc-900, .bg-\[\#09090B\], .bg-\[\#18181B\], .bg-\[\#27272A\]) {
+  color: #FFFFFF !important;
+}
+
+button:is(.bg-black, .bg-zinc-900, .bg-\[\#09090B\], .bg-\[\#18181B\], .bg-\[\#27272A\]) * {
+  color: inherit !important;
+  stroke: currentColor;
+}
+
+:is(#root > div > header, #root > div > main > header, #root > div > nav.fixed.bottom-0, #root > div > aside.w-64, #root > div > aside.admin-sidebar) :is(div, span, a):is(
+  .bg-white,
+  .bg-zinc-50,
+  .bg-zinc-100,
+  .bg-gray-100,
+  .bg-\[\#FAF6EE\],
+  .bg-\[\#FFF8F6\],
+  .bg-\[\#FDEDEC\],
+  .bg-emerald-50,
+  .bg-amber-50
+) {
+  background-color: #18181B !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+  color: #FFFFFF !important;
+}
+
+:is(#root > div > header, #root > div > main > header, #root > div > nav.fixed.bottom-0, #root > div > aside.w-64, #root > div > aside.admin-sidebar) :is(div, span, a):is(
+  .bg-white,
+  .bg-zinc-50,
+  .bg-zinc-100,
+  .bg-gray-100,
+  .bg-\[\#FAF6EE\],
+  .bg-\[\#FFF8F6\],
+  .bg-\[\#FDEDEC\],
+  .bg-emerald-50,
+  .bg-amber-50
+) * {
+  color: inherit !important;
+}
+
+#root input.search-input {
+  background-color: #FEF2F2 !important;
+  border-color: #FCA5A5 !important;
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+  caret-color: #000000 !important;
+  box-shadow: inset 0 0 0 1px rgba(220, 38, 38, 0.04);
+}
+
+#root input.search-input::placeholder {
+  color: #991B1B !important;
+  opacity: 0.62;
+}
+
+#root input.search-input:focus {
+  background-color: #FFFFFF !important;
+  border-color: #DC2626 !important;
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.14);
+}
+
+#root :is(header, main header, nav, aside) input.search-input,
+#root :is(header, main header, nav, aside) input.search-input:focus,
+#root :is(header, main header, nav, aside) input.search-input:active {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+  caret-color: #000000 !important;
 }

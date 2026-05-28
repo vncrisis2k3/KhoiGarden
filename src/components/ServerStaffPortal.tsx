@@ -245,7 +245,7 @@ export function ServerStaffPortal({
 
             <button
               onClick={onBackToServerView}
-              className="px-4 py-2 bg-white hover:bg-[#FAF6EE] text-gray-700 border border-[#E2D9C8] text-xs font-extrabold rounded-xl uppercase transition-all active:scale-95 cursor-pointer shadow-xs"
+              className="px-4 py-2 bg-primary hover:bg-primary-hover text-white border border-primary text-xs font-extrabold rounded-xl uppercase transition-all active:scale-95 cursor-pointer shadow-xs"
               title="Quay lại bảng điều khiển nhân viên quản lý"
             >
               Quay lại quản lý
@@ -256,7 +256,7 @@ export function ServerStaffPortal({
       </header>
 
       {/* 2. Main Layout Workspace split */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 w-full flex-grow flex flex-col lg:flex-row gap-6 overflow-hidden">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 w-full flex-grow flex flex-col lg:flex-row gap-6 overflow-visible">
         
         {/* Left Side: Table Layout selector (60% width) */}
         <section className="flex-1 flex flex-col gap-4">
@@ -270,7 +270,7 @@ export function ServerStaffPortal({
                 placeholder="Tìm bàn ăn nhanh..."
                 value={tableSearch}
                 onChange={(e) => setTableSearch(e.target.value)}
-                className="w-full bg-[#FAF6EE] text-xs pl-9 pr-4 py-2 rounded-xl border border-[#E2D9C8] focus:outline-none"
+                className="search-input w-full bg-[#FAF6EE] text-xs pl-9 pr-4 py-2 rounded-xl border border-[#E2D9C8] focus:outline-none"
               />
             </div>
 
@@ -288,7 +288,7 @@ export function ServerStaffPortal({
                   className={`px-3 py-1.5 rounded-lg text-[10px] font-extrabold uppercase transition-all whitespace-nowrap ${
                     activeSection === tab.id
                       ? 'bg-primary text-white'
-                      : 'bg-[#FAF6EE] text-gray-500 hover:text-gray-900 border border-[#E2D9C8]/40'
+                      : 'bg-[#FAF6EE] text-gray-700 hover:text-gray-900 border border-[#E2D9C8]/40'
                   }`}
                 >
                   {tab.label}
@@ -298,20 +298,22 @@ export function ServerStaffPortal({
           </div>
 
           {/* Grid Layout tables list */}
-          <div className="flex-grow overflow-y-auto max-h-[560px] grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 pr-1">
+          <div className="flex-grow overflow-visible grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 pr-1 pb-4">
             {filteredTables.map((table) => {
               const isSelected = table.id === selectedTableId
-              let bgClass = 'bg-white border-[#E2D9C8]/80 hover:bg-[#FAF6EE]/50'
-              let badgeColor = 'bg-gray-100 text-gray-500'
+              let bgClass = 'bg-white border-orange-400 hover:border-orange-500'
+              let badgeColor = 'bg-white text-black border border-orange-300'
+              let tableTextColor = 'text-black'
+              let metaTextColor = 'text-black'
+              let detailLineClass = 'text-black border-orange-200'
               let statusLabel = 'Trống'
 
               if (table.status === 'DINING') {
-                bgClass = 'bg-[#FDEDEC]/25 border-primary/20 hover:bg-[#FDEDEC]/40'
-                badgeColor = 'bg-primary/10 text-primary'
+                badgeColor = 'bg-white text-black border border-orange-300'
                 statusLabel = 'Đang ăn'
               } else if (table.status === 'WAITING_FOOD') {
-                bgClass = 'bg-amber-50/20 border-amber-300 hover:bg-amber-50/40 animate-pulse-slow'
-                badgeColor = 'bg-amber-100 text-amber-800'
+                bgClass = 'bg-white border-orange-500 hover:border-orange-600'
+                badgeColor = 'bg-white text-black border border-orange-300'
                 statusLabel = 'Đang chờ món'
               }
 
@@ -329,18 +331,18 @@ export function ServerStaffPortal({
                   {/* Alert notification request from customers */}
                   {table.assistanceRequested && (
                     <span className="absolute -top-1.5 -right-1.5 flex h-3.5 w-3.5">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-orange-500 flex items-center justify-center">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-primary flex items-center justify-center">
                         <Bell className="w-2 h-2 text-white" />
                       </span>
                     </span>
                   )}
 
-                  <span className={`font-serif font-extrabold text-sm ${isSelected ? 'text-primary' : 'text-gray-800'}`}>
+                  <span className={`font-serif font-extrabold text-sm ${isSelected ? 'text-primary' : tableTextColor}`}>
                     {table.name}
                   </span>
                   
-                  <span className="text-[9px] text-gray-400 font-bold block mt-0.5">
+                  <span className={`text-[9px] font-bold block mt-0.5 ${isSelected ? 'text-black' : metaTextColor}`}>
                     {table.section === 'floor_1' ? 'Tầng 1' : table.section === 'floor_2' ? 'Tầng 2' : 'Phòng VIP'}
                   </span>
 
@@ -349,7 +351,7 @@ export function ServerStaffPortal({
                   </span>
 
                   {table.status !== 'EMPTY' && (
-                    <div className="mt-2 text-[9px] text-gray-400 font-mono font-bold flex justify-between border-t border-gray-100 pt-1.5">
+                    <div className={`mt-2 text-[9px] font-mono font-bold flex justify-between border-t pt-1.5 ${isSelected ? 'text-black border-orange-200' : detailLineClass}`}>
                       <span>👤 {table.guests}K</span>
                       <span>⏱️ {table.duration}p</span>
                     </div>
@@ -383,9 +385,9 @@ export function ServerStaffPortal({
                   )
                   showToast('Đã phản hồi và tắt báo chuông hỗ trợ.', 'info')
                 }}
-                className="px-2.5 py-1 bg-orange-100 hover:bg-orange-200 border border-orange-300 text-orange-800 text-[9px] font-bold rounded-lg uppercase tracking-wide flex items-center gap-1 transition-all active-press"
+                className="px-2.5 py-1 bg-primary hover:bg-primary-hover border border-primary text-white text-[9px] font-bold rounded-lg uppercase tracking-wide flex items-center gap-1 transition-all active-press"
               >
-                <Bell className="w-3 h-3 text-orange-700 animate-bounce" />
+                <Bell className="w-3 h-3 text-white animate-bounce" />
                 <span>Tắt báo hỗ trợ</span>
               </button>
             )}
@@ -450,7 +452,7 @@ export function ServerStaffPortal({
                     const status = item.status || 'pending'
                     return (
                       <div key={item.id} className="py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-left">
-                        <div className="max-w-[45%]">
+                        <div className="max-w-full sm:max-w-[45%]">
                           <span className="font-bold text-xs text-gray-800 leading-snug block">{item.name}</span>
                           <span className="text-[10px] text-gray-400 mt-0.5 font-bold font-mono">
                             {formatPrice(item.price)} x{item.quantity}
@@ -533,7 +535,7 @@ export function ServerStaffPortal({
       {isAddMenuOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in text-left">
           <div className="absolute inset-0" onClick={() => setIsAddMenuOpen(false)}></div>
-          <div className="w-full max-w-2xl bg-white rounded-3xl border border-[#C0392B]/10 shadow-premium-lg flex flex-col z-10 animate-slide-up overflow-hidden max-h-[500px]">
+          <div className="w-full max-w-2xl bg-white rounded-3xl border border-[#C0392B]/10 shadow-premium-lg flex flex-col z-10 animate-slide-up overflow-hidden max-h-[92vh] sm:max-h-[500px]">
             
             {/* Modal Header */}
             <div className="bg-[#FAF6EE] border-b border-[#E2D9C8]/40 px-6 py-4 flex justify-between items-center shrink-0">
@@ -564,7 +566,7 @@ export function ServerStaffPortal({
                       placeholder="Tìm kiếm đồ ăn, nước uống..."
                       value={menuSearchQuery}
                       onChange={(e) => setMenuSearchQuery(e.target.value)}
-                      className="w-full bg-[#FAF6EE] text-xs pl-9 pr-4 py-2 rounded-xl border border-[#E2D9C8]/60 focus:outline-none"
+                      className="search-input w-full bg-[#FAF6EE] text-xs pl-9 pr-4 py-2 rounded-xl border border-[#E2D9C8]/60 focus:outline-none"
                     />
                   </div>
 
@@ -581,7 +583,7 @@ export function ServerStaffPortal({
                         className={`px-3 py-1.5 rounded-lg text-[9px] font-extrabold uppercase whitespace-nowrap transition-all ${
                           activeCategory === tab.id
                             ? 'bg-primary text-white'
-                            : 'bg-gray-100 text-gray-500 hover:text-gray-900'
+                          : 'bg-gray-100 text-gray-700 hover:text-gray-900'
                         }`}
                       >
                         {tab.label}
@@ -642,14 +644,14 @@ export function ServerStaffPortal({
                           <div className="flex items-center gap-1.5 shrink-0 bg-white border border-gray-200 rounded-lg p-0.5">
                             <button
                               onClick={() => handleUpdateCartQty(itemId, -1)}
-                              className="h-5 w-5 rounded bg-gray-100 flex items-center justify-center font-extrabold text-[10px] text-gray-500"
+                              className="h-5 w-5 rounded bg-gray-100 flex items-center justify-center font-extrabold text-[10px] text-gray-700"
                             >
                               -
                             </button>
                             <span className="font-bold font-mono text-[10px] w-4 text-center">{qty}</span>
                             <button
                               onClick={() => handleUpdateCartQty(itemId, 1)}
-                              className="h-5 w-5 rounded bg-gray-100 flex items-center justify-center font-extrabold text-[10px] text-gray-500"
+                              className="h-5 w-5 rounded bg-gray-100 flex items-center justify-center font-extrabold text-[10px] text-gray-700"
                             >
                               +
                             </button>
@@ -681,15 +683,17 @@ export function ServerStaffPortal({
 
       {/* dynamic toast Alert Container */}
       {toast && (
-        <div className="fixed bottom-6 right-6 z-50 bg-white border border-[#C0392B]/10 shadow-premium-lg px-4 py-3.5 rounded-xl flex items-center gap-2.5 animate-slide-up max-w-sm text-xs font-bold text-left">
+        <div className={`fixed bottom-6 right-6 z-50 border shadow-premium-lg px-4 py-3.5 rounded-xl flex items-center gap-2.5 animate-slide-up max-w-sm text-xs font-bold text-left ${
+          toast.type === 'warning' ? 'bg-primary border-primary text-white' : 'bg-white border-[#C0392B]/10'
+        }`}>
           {toast.type === 'success' ? (
             <CheckCircle className="w-5 h-5 text-emerald-600 shrink-0" />
           ) : toast.type === 'warning' ? (
-            <Bell className="w-5 h-5 text-orange-600 shrink-0 animate-bounce" />
+            <Bell className="w-5 h-5 text-white shrink-0 animate-bounce" />
           ) : (
             <AlertCircle className="w-5 h-5 text-indigo-600 shrink-0" />
           )}
-          <span className="text-gray-700 leading-snug">{toast.text}</span>
+          <span className={`${toast.type === 'warning' ? 'text-white' : 'text-gray-700'} leading-snug`}>{toast.text}</span>
         </div>
       )}
 

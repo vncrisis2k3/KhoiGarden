@@ -313,17 +313,15 @@ export function CustomerOrderPortal({
           <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-4">
             {tables.map((table) => {
               let statusText = 'Bàn trống'
-              let colorClasses = 'border-gray-200 bg-white hover:border-primary/50 hover:bg-[#FDEDEC]/20'
-              let textClasses = 'text-gray-800'
+              let colorClasses = 'border-orange-400 bg-white hover:border-orange-500'
+              let textClasses = 'text-black'
+              let metaTextClasses = 'text-black'
 
               if (table.status === 'DINING') {
                 statusText = 'Đang dùng bữa'
-                colorClasses = 'border-primary/30 bg-[#FDEDEC]/40 hover:bg-[#FDEDEC]/60'
-                textClasses = 'text-primary'
               } else if (table.status === 'WAITING_FOOD') {
                 statusText = 'Đang chờ món'
-                colorClasses = 'border-amber-300 bg-amber-50 hover:bg-amber-100'
-                textClasses = 'text-amber-700'
+                colorClasses = 'border-orange-500 bg-white hover:border-orange-600'
               }
 
               return (
@@ -335,15 +333,15 @@ export function CustomerOrderPortal({
                   <span className={`font-serif font-extrabold text-lg block ${textClasses}`}>
                     {table.name}
                   </span>
-                  <span className="text-[10px] font-bold text-gray-400 font-sans block mt-1">
+                  <span className={`text-[10px] font-bold font-sans block mt-1 ${metaTextClasses}`}>
                     {table.section === 'floor_1' ? 'Tầng 1' : table.section === 'floor_2' ? 'Tầng 2' : 'Phòng VIP'}
                   </span>
                   <span className={`text-[9px] font-extrabold uppercase px-2 py-0.5 rounded-md mt-2 tracking-wide inline-block ${
                     table.status === 'EMPTY' 
-                      ? 'bg-gray-100 text-gray-500' 
+                      ? 'bg-white text-black border border-orange-300' 
                       : table.status === 'WAITING_FOOD'
-                      ? 'bg-amber-100 text-amber-800'
-                      : 'bg-primary/10 text-primary'
+                      ? 'bg-white text-black border border-orange-300'
+                      : 'bg-white text-black border border-orange-300'
                   }`}>
                     {statusText}
                   </span>
@@ -414,7 +412,7 @@ export function CustomerOrderPortal({
       
       {/* 1. Header Area with Table info and Quick Actions */}
       <header className="sticky top-0 z-40 bg-white border-b border-[#C0392B]/10 shadow-sm py-4 px-4 sm:px-6">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           {/* Table name tag & title */}
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/20">
@@ -424,7 +422,7 @@ export function CustomerOrderPortal({
               <div className="flex items-center gap-2">
                 <span className="font-extrabold text-lg text-gray-800 font-serif">{activeTable?.name}</span>
                 <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full uppercase font-mono ${
-                  activeTable?.status === 'WAITING_FOOD' ? 'bg-amber-100 text-amber-800' : 'bg-primary/10 text-primary'
+                  activeTable?.status === 'WAITING_FOOD' ? 'bg-white text-black border border-orange-300' : 'bg-white text-black border border-orange-300'
                 }`}>
                   {activeTable?.status === 'WAITING_FOOD' ? 'Đang chờ món' : 'Đang chọn món'}
                 </span>
@@ -434,7 +432,7 @@ export function CustomerOrderPortal({
           </div>
 
           {/* Quick Buttons row */}
-          <div className="flex items-center gap-2">
+          <div className="grid grid-cols-2 sm:flex sm:items-center gap-2 w-full sm:w-auto">
             
             {/* View history of ordered dishes */}
             {(activeTable?.orders.length ?? 0) > 0 && (
@@ -451,20 +449,20 @@ export function CustomerOrderPortal({
             {/* Assistance Button (Call Staff) */}
             <button
               onClick={handleCallStaff}
-              className={`px-3 py-2 border text-xs font-bold rounded-xl uppercase flex items-center gap-1.5 transition-all active-press ${
+              className={`px-3 py-2 border text-xs font-bold rounded-xl uppercase flex items-center justify-center gap-1.5 transition-all active-press ${
                 activeTable?.assistanceRequested
-                  ? 'bg-orange-50 border-orange-300 text-orange-700 animate-pulse'
-                  : 'bg-white hover:bg-[#FDEDEC] border-primary/30 text-primary'
+                  ? 'bg-primary border-primary text-white animate-pulse'
+                  : 'bg-primary hover:bg-primary-hover border-primary text-white'
               }`}
             >
-              <Bell className={`w-4 h-4 ${activeTable?.assistanceRequested ? 'animate-bounce text-orange-600' : ''}`} />
+              <Bell className={`w-4 h-4 text-white ${activeTable?.assistanceRequested ? 'animate-bounce' : ''}`} />
               <span>{activeTable?.assistanceRequested ? 'Đang gọi NV...' : 'Gọi phục vụ'}</span>
             </button>
 
             {/* Back to Staff Dashboard button */}
             <button
               onClick={onBackToServerView}
-              className="px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold uppercase transition-all active-press"
+              className="px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold uppercase transition-all active-press text-center"
               title="Quay lại giao diện nhân viên ca trực"
             >
               Quay lại nhân viên
@@ -474,10 +472,10 @@ export function CustomerOrderPortal({
       </header>
 
       {/* 2. Main Portal Columns (Left: Menu, Right: Cart & Order) */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 w-full flex-grow flex flex-col lg:flex-row gap-6 overflow-hidden">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 w-full flex-grow flex flex-col lg:flex-row gap-6 overflow-visible">
         
         {/* Left Column: Menu Browsing Workspace (65% width) */}
-        <section className="flex-1 flex flex-col gap-5 overflow-hidden">
+        <section className="flex-1 flex flex-col gap-5 overflow-visible">
           
           {/* Categories bar and Search bar */}
           <div className="bg-white border border-[#E2D9C8]/60 p-4 rounded-2xl shadow-xs flex flex-col sm:flex-row gap-4 items-center shrink-0">
@@ -489,7 +487,7 @@ export function CustomerOrderPortal({
                 placeholder="Tìm món ăn ngon..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-[#FAF6EE] text-xs pl-9 pr-4 py-2 rounded-xl border border-[#E2D9C8] focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
+                className="search-input w-full bg-[#FAF6EE] text-xs pl-9 pr-4 py-2 rounded-xl border border-[#E2D9C8] focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
               />
             </div>
 
@@ -517,17 +515,24 @@ export function CustomerOrderPortal({
           </div>
 
           {/* Menu Items Touch-friendly Grid */}
-          <div className="flex-grow overflow-y-auto max-h-[560px] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 pr-1">
+          <div className="flex-grow overflow-visible grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 auto-rows-max items-start content-start gap-4 pr-1 pb-4">
             {filteredMenu.map((item) => {
               const qtyInCart = cart[item.id] || 0
 
               return (
                 <div
                   key={item.id}
-                  className="bg-white border border-[#E2D9C8]/60 rounded-2xl overflow-hidden flex flex-col justify-between shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 group"
+                  onClick={() => handleAddToCart(item.id)}
+                  className="relative bg-white border border-[#E2D9C8]/60 rounded-2xl overflow-hidden flex flex-col justify-between shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 group cursor-pointer active-press"
                 >
+                  {qtyInCart > 0 && (
+                    <span className="absolute top-3 right-3 z-10 min-w-7 h-7 px-2 rounded-full bg-primary text-white text-xs font-extrabold font-mono flex items-center justify-center shadow-md shadow-primary/20">
+                      x{qtyInCart}
+                    </span>
+                  )}
+
                   {/* Visual Category badge and Header */}
-                  <div className="p-4 text-left">
+                  <div className="p-4 pr-12 text-left">
                     <span className="inline-flex items-center gap-1 text-[9px] bg-primary/5 text-primary font-bold px-2 py-0.5 rounded-md uppercase font-mono">
                       {getCategoryIcon(item.category)}
                       <span>{item.category === 'mains' ? 'Món chính' : item.category === 'appetizers' ? 'Khai vị' : 'Đồ uống'}</span>
@@ -549,27 +554,35 @@ export function CustomerOrderPortal({
                     {qtyInCart > 0 ? (
                       <div className="flex items-center gap-2.5 bg-white border border-gray-200 rounded-xl px-2 py-1">
                         <button
-                          onClick={() => handleUpdateCartQty(item.id, -1)}
-                          className="h-6 w-6 rounded-full bg-gray-100 text-gray-500 font-extrabold flex items-center justify-center hover:bg-gray-200 active:scale-90"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            handleUpdateCartQty(item.id, -1)
+                          }}
+                          className="h-6 w-6 rounded-full bg-gray-100 text-gray-700 font-extrabold flex items-center justify-center hover:bg-gray-200 active:scale-90"
                         >
                           -
                         </button>
                         <span className="font-bold font-mono text-xs text-gray-800 w-4 text-center">{qtyInCart}</span>
                         <button
-                          onClick={() => handleUpdateCartQty(item.id, 1)}
-                          className="h-6 w-6 rounded-full bg-gray-100 text-gray-500 font-extrabold flex items-center justify-center hover:bg-gray-200 active:scale-90"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            handleUpdateCartQty(item.id, 1)
+                          }}
+                          className="h-6 w-6 rounded-full bg-gray-100 text-gray-700 font-extrabold flex items-center justify-center hover:bg-gray-200 active:scale-90"
                         >
                           +
                         </button>
                       </div>
                     ) : (
+                      <>
                       <button
                         onClick={() => handleAddToCart(item.id)}
-                        className="px-3 py-1.5 bg-primary hover:bg-[#A93226] text-white text-[10px] font-extrabold uppercase rounded-lg active-press transition-all flex items-center gap-1 cursor-pointer"
+                        className="hidden"
                       >
                         <Plus className="w-3.5 h-3.5" />
                         <span>Thêm món</span>
                       </button>
+                      </>
                     )}
                   </div>
                 </div>
@@ -608,7 +621,7 @@ export function CustomerOrderPortal({
 
                 return (
                   <div key={itemId} className="py-3 flex items-center justify-between text-xs text-left">
-                    <div className="max-w-[55%]">
+                    <div className="max-w-[60%] min-w-0">
                       <span className="font-bold text-gray-800 leading-snug block">{item.name}</span>
                       <span className="text-[10px] font-mono text-gray-400 block mt-0.5">{formatPrice(item.price)}</span>
                     </div>
@@ -616,14 +629,14 @@ export function CustomerOrderPortal({
                     <div className="flex items-center gap-2 shrink-0">
                       <button
                         onClick={() => handleUpdateCartQty(itemId, -1)}
-                        className="h-6 w-6 rounded-full bg-gray-100 text-gray-500 font-extrabold flex items-center justify-center hover:bg-gray-200 active:scale-90"
+                        className="h-6 w-6 rounded-full bg-gray-100 text-gray-700 font-extrabold flex items-center justify-center hover:bg-gray-200 active:scale-90"
                       >
                         -
                       </button>
-                      <span className="font-bold font-mono text-gray-800 w-4 text-center">{qty}</span>
+                      <div className="text-xs font-mono font-bold text-gray-800">{qty}</div>
                       <button
                         onClick={() => handleUpdateCartQty(itemId, 1)}
-                        className="h-6 w-6 rounded-full bg-gray-100 text-gray-500 font-extrabold flex items-center justify-center hover:bg-gray-200 active:scale-90"
+                        className="h-6 w-6 rounded-full bg-gray-100 text-gray-700 font-extrabold flex items-center justify-center hover:bg-gray-200 active:scale-90"
                       >
                         +
                       </button>
@@ -728,7 +741,7 @@ export function CustomerOrderPortal({
                             ? 'bg-emerald-50 border-emerald-200 text-emerald-700 font-bold'
                             : status === 'cooking'
                             ? 'bg-amber-50 border-amber-200 text-amber-700 animate-pulse font-bold'
-                            : 'bg-gray-100 border-gray-200 text-gray-500'
+                            : 'bg-gray-100 border-gray-200 text-gray-700'
                         }`}>
                           {status === 'served' ? (
                             <>
@@ -811,7 +824,7 @@ export function CustomerOrderPortal({
               {!transferConfirmed && (
                 <button
                   onClick={() => setIsPaymentOpen(false)}
-                  className="h-8 w-8 bg-gray-100 hover:bg-gray-200 text-gray-500 rounded-full flex items-center justify-center transition-all active-press"
+                  className="h-8 w-8 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full flex items-center justify-center transition-all active-press"
                 >
                   <X className="w-4.5 h-4.5" />
                 </button>
@@ -963,17 +976,19 @@ export function CustomerOrderPortal({
 
       {/* Local Toast Alert Container */}
       {toast && (
-        <div className="fixed bottom-6 right-6 z-50 bg-white border border-[#C0392B]/10 shadow-premium-lg px-4 py-3.5 rounded-xl flex items-center gap-2.5 animate-slide-up max-w-sm text-xs font-bold text-left">
+        <div className={`fixed bottom-6 right-6 z-50 border shadow-premium-lg px-4 py-3.5 rounded-xl flex items-center gap-2.5 animate-slide-up max-w-sm text-xs font-bold text-left ${
+          toast.type === 'warning' ? 'bg-primary border-primary text-white' : 'bg-white border-[#C0392B]/10'
+        }`}>
           {toast.type === 'success' ? (
             <CheckCircle className="w-5 h-5 text-emerald-600 shrink-0" />
           ) : toast.type === 'warning' ? (
-            <Bell className="w-5 h-5 text-orange-600 shrink-0 animate-bounce" />
+            <Bell className="w-5 h-5 text-white shrink-0 animate-bounce" />
           ) : toast.type === 'error' ? (
             <X className="w-5 h-5 text-primary shrink-0" />
           ) : (
             <HelpCircle className="w-5 h-5 text-indigo-600 shrink-0" />
           )}
-          <span className="text-gray-700 leading-snug">{toast.text}</span>
+          <span className={`${toast.type === 'warning' ? 'text-white' : 'text-gray-700'} leading-snug`}>{toast.text}</span>
         </div>
       )}
 

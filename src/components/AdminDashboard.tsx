@@ -219,14 +219,14 @@ export function AdminDashboard({ onBackToServerView }: AdminDashboardProps) {
   const maxRevenue = Math.max(...chartData.map((d) => d.revenue))
 
   return (
-    <div className="h-screen w-full bg-app-bg text-[#2C3E50] font-sans flex overflow-hidden selection:bg-primary selection:text-white">
+    <div className="min-h-screen lg:h-screen w-full bg-app-bg text-[#2C3E50] font-sans flex flex-col lg:flex-row overflow-x-hidden lg:overflow-hidden selection:bg-primary selection:text-white">
       
       {/* 1. Left Sticky Navigation Sidebar (Vertical Sidebar component) */}
-      <aside className="w-64 bg-white border-r border-[#C0392B]/10 flex flex-col justify-between shrink-0 h-full z-20">
-        <div className="flex flex-col overflow-y-auto">
+      <aside className="admin-sidebar w-full lg:w-64 bg-white border-b lg:border-b-0 lg:border-r border-[#C0392B]/10 flex flex-col lg:justify-between shrink-0 h-auto lg:h-full z-20">
+        <div className="flex flex-col overflow-visible lg:overflow-y-auto">
           
           {/* Logo segment */}
-          <div className="px-6 py-6 border-b border-[#C0392B]/5 flex items-center gap-3">
+          <div className="px-4 sm:px-6 py-4 lg:py-6 border-b border-[#C0392B]/5 flex items-center gap-3">
             <div className="h-9 w-9 bg-primary rounded-xl flex items-center justify-center shadow-md shadow-primary/20">
               <ChefHat className="text-white w-5 h-5 animate-pulse-slow" />
             </div>
@@ -237,7 +237,7 @@ export function AdminDashboard({ onBackToServerView }: AdminDashboardProps) {
           </div>
 
           {/* Sidebar Tabs */}
-          <nav className="p-4 space-y-1.5 text-left">
+          <nav className="p-3 sm:p-4 grid grid-cols-2 sm:grid-cols-3 lg:block gap-2 lg:space-y-1.5 text-left">
             {[
               { id: 'dashboard', label: 'Tổng quan', icon: Activity },
               { id: 'menu', label: 'Quản lý thực đơn', icon: Utensils },
@@ -266,7 +266,7 @@ export function AdminDashboard({ onBackToServerView }: AdminDashboardProps) {
         </div>
 
         {/* Sidebar Footer options */}
-        <div className="p-4 border-t border-gray-100 space-y-2">
+        <div className="hidden lg:block p-4 border-t border-gray-100 space-y-2">
           {onBackToServerView && (
             <button
               onClick={onBackToServerView}
@@ -282,10 +282,10 @@ export function AdminDashboard({ onBackToServerView }: AdminDashboardProps) {
       </aside>
 
       {/* Main Content Workspace Panel */}
-      <main className="flex-1 flex flex-col overflow-hidden">
+      <main className="flex-1 flex flex-col overflow-visible lg:overflow-hidden min-w-0">
         
         {/* Top bar header */}
-        <header className="bg-white border-b border-[#C0392B]/10 px-8 py-4 flex items-center justify-between shrink-0 shadow-xs z-10">
+        <header className="bg-white border-b border-[#C0392B]/10 px-4 sm:px-8 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 shrink-0 shadow-xs z-10">
           <div className="text-left">
             <h1 className="font-extrabold text-xl text-gray-800 font-serif tracking-tight">
               {activeTab === 'dashboard' && 'Bảng điều hành quản lý'}
@@ -313,7 +313,7 @@ export function AdminDashboard({ onBackToServerView }: AdminDashboardProps) {
         </header>
 
         {/* Scrollable Main Area */}
-        <div className="flex-grow overflow-y-auto p-8 bg-[#FFF8F6] space-y-8">
+        <div className="flex-grow overflow-y-auto p-4 sm:p-8 bg-[#FFF8F6] space-y-8">
           
           {/* ================= VIEW 1: DASHBOARD OVERVIEW ================= */}
           {activeTab === 'dashboard' && (
@@ -543,7 +543,7 @@ export function AdminDashboard({ onBackToServerView }: AdminDashboardProps) {
                         placeholder="Ghi lệnh phê duyệt thủ công..."
                         value={newOverrideAction}
                         onChange={(e) => setNewOverrideAction(e.target.value)}
-                        className="flex-1 bg-[#FAF6EE] text-xs px-3 py-2 rounded-xl border border-[#E2D9C8] focus:border-primary focus:outline-none"
+                        className="search-input flex-1 bg-[#FAF6EE] text-xs px-3 py-2 rounded-xl border border-[#E2D9C8] focus:border-primary focus:outline-none"
                       />
                       <button
                         type="submit"
@@ -575,7 +575,7 @@ export function AdminDashboard({ onBackToServerView }: AdminDashboardProps) {
                       placeholder="Tìm kiếm món ăn..."
                       value={inventorySearch}
                       onChange={(e) => setInventorySearch(e.target.value)}
-                      className="w-full bg-[#FAF6EE] text-xs pl-8 pr-3 py-1.5 rounded-lg border border-[#E2D9C8] focus:outline-none"
+                      className="search-input w-full bg-[#FAF6EE] text-xs pl-8 pr-3 py-1.5 rounded-lg border border-[#E2D9C8] focus:outline-none"
                     />
                   </div>
 
@@ -768,7 +768,7 @@ export function AdminDashboard({ onBackToServerView }: AdminDashboardProps) {
                               ? 'bg-emerald-50 text-emerald-800 border-emerald-200' 
                               : st.status === 'Đang nghỉ giải lao' 
                               ? 'bg-amber-50 text-amber-800 border-amber-200 animate-pulse' 
-                              : 'bg-gray-100 text-gray-400 border-gray-200'
+                              : 'bg-gray-100 text-gray-700 border-gray-200'
                           }`}>
                             {st.status}
                           </span>
@@ -803,9 +803,9 @@ export function AdminDashboard({ onBackToServerView }: AdminDashboardProps) {
                   <tbody className="divide-y divide-gray-50">
                     {invoices.map((inv) => (
                       <tr key={inv.id} className="hover:bg-gray-50/50">
-                        <td className="py-3.5 font-bold font-mono text-gray-500">{inv.id}</td>
+                        <td className="py-3.5 font-bold font-mono text-gray-700">{inv.id}</td>
                         <td className="py-3.5 font-bold text-gray-800">{inv.table}</td>
-                        <td className="py-3.5 text-right font-mono text-gray-500">{formatPrice(inv.subtotal)}</td>
+                        <td className="py-3.5 text-right font-mono text-gray-700">{formatPrice(inv.subtotal)}</td>
                         <td className="py-3.5 text-right font-mono text-[#B7950B] font-bold">
                           {inv.discount > 0 ? `-${formatPrice(inv.discount)}` : '--'}
                         </td>
@@ -821,7 +821,7 @@ export function AdminDashboard({ onBackToServerView }: AdminDashboardProps) {
                             {inv.method}
                           </span>
                         </td>
-                        <td className="py-3.5 text-right font-mono text-gray-400">{inv.timestamp}</td>
+                        <td className="py-3.5 text-right font-mono text-gray-700">{inv.timestamp}</td>
                       </tr>
                     ))}
                   </tbody>

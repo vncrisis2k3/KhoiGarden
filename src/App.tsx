@@ -610,36 +610,36 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-app-bg text-[#2C3E50] pb-24 relative selection:bg-primary selection:text-white antialiased flex flex-col font-sans">
+    <div className="min-h-screen bg-app-bg text-zinc-900 pb-24 relative selection:bg-primary selection:text-white antialiased flex flex-col font-sans">
       
       {/* 1. Header component */}
-      <header className="sticky top-0 z-40 bg-[#FFF8F6]/90 backdrop-blur-md border-b border-[#C0392B]/10 shadow-sm py-4 px-4 sm:px-6">
+      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-zinc-200/60 shadow-xs py-4 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           
           {/* Brand/Logo & Title */}
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 sm:h-12 sm:w-12 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/20 transition-all hover:scale-105 active:scale-95">
-              <ChefHat className="text-[#FFF8F6] w-6 h-6 sm:w-7 sm:h-7 animate-pulse-slow" />
+            <div className="h-10 w-10 sm:h-12 sm:w-12 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/10 transition-all hover:scale-105 active:scale-95">
+              <ChefHat className="text-white w-6 h-6 sm:w-7 sm:h-7" />
             </div>
             <div>
               <div className="flex items-center gap-2">
                 <span className="font-extrabold text-2xl tracking-tight text-primary font-serif">KHÓI</span>
                 <span className="text-[10px] bg-primary/10 text-primary font-bold px-2 py-0.5 rounded-full uppercase tracking-widest font-mono">Phục vụ</span>
               </div>
-              <p className="text-xs text-gray-500 font-medium">Boutique Bistro Hub</p>
+              <p className="text-xs text-zinc-500 font-medium">Boutique Bistro Hub</p>
             </div>
           </div>
 
           {/* Center Search Bar for Tablet View */}
           <div className="flex-1 max-w-sm hidden md:block">
             <div className="relative">
-              <Search className="absolute left-3 top-2.5 text-gray-400 w-4 h-4" />
+              <Search className="absolute left-3 top-2.5 text-zinc-400 w-4 h-4" />
               <input
                 type="text"
                 placeholder="Tìm kiếm bàn..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-[#FAF6EE] text-[#2C3E50] text-sm pl-9 pr-4 py-2 rounded-xl border border-[#E2D9C8] focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none transition-all"
+                className="search-input w-full bg-zinc-50 text-zinc-900 text-sm pl-9 pr-4 py-2 rounded-xl border border-zinc-200 focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none transition-all"
               />
             </div>
           </div>
@@ -647,31 +647,31 @@ function App() {
           {/* Server Profile & Real-time Sync Controls */}
           <div className="flex items-center justify-between sm:justify-end gap-3 sm:gap-4">
             {/* View Switchers to Cashier & Admin Dashboard */}
-            <div className="flex items-center gap-2 shrink-0">
+            <div className="flex items-center gap-1.5 shrink-0">
               <button
                 onClick={() => setViewMode('waiter')}
-                className="flex items-center gap-1.5 px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-extrabold rounded-xl uppercase transition-all active:scale-95 cursor-pointer shadow-sm shadow-indigo-100"
+                className="flex items-center gap-1 px-3 py-1.5 bg-zinc-900 hover:bg-black text-white text-[11px] font-bold rounded-xl uppercase transition-all active:scale-95 cursor-pointer shadow-xs"
                 title="Mở màn hình phục vụ ca trực cho nhân viên"
               >
-                <span>Nhân viên phục vụ</span>
+                <span>Phục vụ</span>
               </button>
               <button
                 onClick={() => setViewMode('customer')}
-                className="flex items-center gap-1.5 px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold rounded-xl uppercase transition-all active:scale-95 cursor-pointer shadow-sm shadow-emerald-100"
+                className="flex items-center gap-1 px-3 py-1.5 bg-zinc-900 hover:bg-black text-white text-[11px] font-bold rounded-xl uppercase transition-all active:scale-95 cursor-pointer shadow-xs"
                 title="Mở màn hình tự phục vụ cho khách hàng"
               >
                 <span>Khách gọi món</span>
               </button>
               <button
                 onClick={() => setViewMode('cashier')}
-                className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#C0392B] hover:bg-[#A93226] text-white text-xs font-extrabold rounded-xl uppercase transition-all active:scale-95 cursor-pointer shadow-sm shadow-primary/20"
+                className="flex items-center gap-1 px-3 py-1.5 bg-primary hover:bg-primary-hover text-white text-[11px] font-bold rounded-xl uppercase transition-all active:scale-95 cursor-pointer shadow-xs"
                 title="Chuyển sang màn hình thu ngân POS"
               >
                 <span>Thu ngân POS</span>
               </button>
               <button
                 onClick={() => setViewMode('admin')}
-                className="flex items-center gap-1.5 px-3.5 py-1.5 bg-white hover:bg-[#FAF6EE] text-gray-700 border border-[#E2D9C8] text-xs font-extrabold rounded-xl uppercase transition-all active:scale-95 cursor-pointer shadow-xs"
+                className="flex items-center gap-1 px-3 py-1.5 bg-primary hover:bg-primary-hover text-white border border-primary text-[11px] font-bold rounded-xl uppercase transition-all active:scale-95 cursor-pointer shadow-xs"
                 title="Chuyển sang màn hình quản lý admin"
               >
                 <span>Quản lý</span>
@@ -681,26 +681,26 @@ function App() {
             {/* Live Sync Status Pill */}
             <div 
               onClick={handleManualSync}
-              className="flex items-center gap-2 bg-[#FAF6EE] border border-[#E2D9C8] px-3 py-1.5 rounded-xl cursor-pointer hover:border-primary transition-all active:bg-[#FDEDEC]"
+              className="flex items-center gap-2 bg-zinc-50 border border-zinc-200 px-3 py-1.5 rounded-xl cursor-pointer hover:border-primary transition-all active:bg-zinc-100"
             >
               <div className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
               </div>
               <div className="text-left">
-                <p className="text-[10px] font-bold text-emerald-600 leading-none">ĐỒNG BỘ POS HOẠT ĐỘNG</p>
-                <p className="text-[9px] text-gray-400 font-mono mt-0.5">{getSyncText()}</p>
+                <p className="text-[10px] font-bold text-emerald-700 leading-none">POS ONLINE</p>
+                <p className="text-[9px] text-zinc-400 font-mono mt-0.5">{getSyncText()}</p>
               </div>
-              <RefreshCw className={`w-3.5 h-3.5 text-gray-400 ml-1 hover:text-primary transition-all ${isSyncing ? 'animate-spin text-primary' : ''}`} />
+              <RefreshCw className={`w-3.5 h-3.5 text-zinc-400 ml-1 hover:text-primary transition-all ${isSyncing ? 'animate-spin text-primary' : ''}`} />
             </div>
 
             {/* Server Avatar and Name */}
-            <div className="flex items-center gap-2.5 border-l border-gray-200 pl-3 sm:pl-4">
-              <div className="h-9 w-9 sm:h-10 sm:w-10 rounded-full bg-primary/10 border-2 border-primary/20 overflow-hidden flex items-center justify-center">
+            <div className="flex items-center gap-2.5 border-l border-zinc-200 pl-3 sm:pl-4">
+              <div className="h-9 w-9 sm:h-10 sm:w-10 rounded-full bg-primary/5 border border-primary/10 overflow-hidden flex items-center justify-center">
                 <span className="text-sm font-bold text-primary">AM</span>
               </div>
               <div className="text-left hidden sm:block">
-                <h4 className="text-sm font-bold text-gray-800 leading-none">Alex Mercer</h4>
+                <h4 className="text-sm font-bold text-zinc-800 leading-none">Alex Mercer</h4>
                 <span className="text-[10px] text-primary font-bold uppercase tracking-wider font-mono">QUẢN LÝ TẦNG</span>
               </div>
             </div>
@@ -713,51 +713,51 @@ function App() {
         
         {/* Dynamic Mini Dashboard Cards */}
         <section className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-3 mb-6">
-          <div className="bg-[#FAF6EE] border border-[#E2D9C8] p-3 sm:p-4 rounded-2xl flex items-center justify-between shadow-premium hover:-translate-y-0.5 transition-all">
+          <div className="bg-white border border-zinc-200/80 p-3 sm:p-4 rounded-2xl flex items-center justify-between shadow-premium hover:-translate-y-0.5 transition-all">
             <div>
-              <p className="text-xs text-gray-500 font-bold uppercase">Tất cả bàn</p>
-              <h3 className="text-2xl font-bold text-gray-800 mt-1">{stats.total}</h3>
+              <p className="text-xs text-zinc-500 font-bold uppercase">Tất cả bàn</p>
+              <h3 className="text-2xl font-bold text-zinc-850 mt-1">{stats.total}</h3>
             </div>
-            <div className="h-9 w-9 bg-gray-200/50 rounded-xl flex items-center justify-center">
-              <Utensils className="w-5 h-5 text-gray-600" />
+            <div className="h-9 w-9 bg-zinc-100 rounded-xl flex items-center justify-center">
+              <Utensils className="w-5 h-5 text-zinc-600" />
             </div>
           </div>
-          <div className="bg-[#FDEDEC] border border-[#E6B0AA] p-3 sm:p-4 rounded-2xl flex items-center justify-between shadow-premium hover:-translate-y-0.5 transition-all">
+          <div className="bg-white border border-orange-300 p-3 sm:p-4 rounded-2xl flex items-center justify-between shadow-premium hover:-translate-y-0.5 transition-all">
             <div>
-              <p className="text-xs text-primary font-bold uppercase">Đang dùng bữa</p>
-              <h3 className="text-2xl font-bold text-primary mt-1">{stats.occupied}</h3>
+              <p className="text-xs text-black font-bold uppercase">Đang dùng bữa</p>
+              <h3 className="text-2xl font-bold text-black mt-1">{stats.occupied}</h3>
             </div>
-            <div className="h-9 w-9 bg-primary/10 rounded-xl flex items-center justify-center">
-              <Flame className="w-5 h-5 text-primary" />
+            <div className="h-9 w-9 bg-white border border-orange-300 rounded-xl flex items-center justify-center">
+              <Flame className="w-5 h-5 text-black" />
             </div>
           </div>
-          <div className="bg-amber-50 border border-amber-200 p-3 sm:p-4 rounded-2xl flex items-center justify-between shadow-premium hover:-translate-y-0.5 transition-all">
+          <div className="bg-white border border-orange-300 p-3 sm:p-4 rounded-2xl flex items-center justify-between shadow-premium hover:-translate-y-0.5 transition-all">
             <div>
-              <p className="text-xs text-amber-700 font-bold uppercase">Chờ món</p>
-              <h3 className="text-2xl font-bold text-amber-700 mt-1">{stats.waiting}</h3>
+              <p className="text-xs text-black font-bold uppercase">Chờ món</p>
+              <h3 className="text-2xl font-bold text-black mt-1">{stats.waiting}</h3>
             </div>
-            <div className="h-9 w-9 bg-amber-100 rounded-xl flex items-center justify-center">
-              <Clock className="w-5 h-5 text-amber-600" />
+            <div className="h-9 w-9 bg-white border border-orange-300 rounded-xl flex items-center justify-center">
+              <Clock className="w-5 h-5 text-black" />
             </div>
           </div>
-          <div className="bg-white border border-[#E2D9C8] p-3 sm:p-4 rounded-2xl flex items-center justify-between shadow-premium hover:-translate-y-0.5 transition-all">
+          <div className="bg-white border border-zinc-200/80 p-3 sm:p-4 rounded-2xl flex items-center justify-between shadow-premium hover:-translate-y-0.5 transition-all">
             <div>
-              <p className="text-xs text-gray-500 font-bold uppercase">Bàn trống</p>
-              <h3 className="text-2xl font-bold text-gray-700 mt-1">{stats.empty}</h3>
+              <p className="text-xs text-zinc-500 font-bold uppercase">Bàn trống</p>
+              <h3 className="text-2xl font-bold text-zinc-850 mt-1">{stats.empty}</h3>
             </div>
-            <div className="h-9 w-9 bg-[#FAF6EE] rounded-xl flex items-center justify-center">
-              <Plus className="w-5 h-5 text-gray-500" />
+            <div className="h-9 w-9 bg-zinc-50 rounded-xl flex items-center justify-center">
+              <Plus className="w-5 h-5 text-zinc-500" />
             </div>
           </div>
-          <div className={`col-span-2 sm:col-span-4 lg:col-span-1 border p-3 sm:p-4 rounded-2xl flex items-center justify-between shadow-premium hover:-translate-y-0.5 transition-all cursor-pointer ${stats.assistance > 0 ? 'bg-orange-50 border-orange-300 animate-pulse' : 'bg-white border-[#E2D9C8]'}`}>
+          <div className={`col-span-2 sm:col-span-4 lg:col-span-1 border p-3 sm:p-4 rounded-2xl flex items-center justify-between shadow-premium hover:-translate-y-0.5 transition-all cursor-pointer ${stats.assistance > 0 ? 'bg-primary border-primary text-white animate-pulse' : 'bg-white border-zinc-200/80 text-zinc-800'}`}>
             <div>
-              <p className="text-xs text-gray-500 font-bold uppercase">Yêu cầu hỗ trợ</p>
-              <h3 className={`text-2xl font-bold mt-1 ${stats.assistance > 0 ? 'text-orange-600' : 'text-gray-800'}`}>
+              <p className={`text-xs font-bold uppercase ${stats.assistance > 0 ? 'text-white' : 'text-zinc-500'}`}>Yêu cầu hỗ trợ</p>
+              <h3 className={`text-2xl font-bold mt-1 ${stats.assistance > 0 ? 'text-white' : 'text-zinc-850'}`}>
                 {stats.assistance} đang gọi
               </h3>
             </div>
-            <div className={`h-9 w-9 rounded-xl flex items-center justify-center ${stats.assistance > 0 ? 'bg-orange-200' : 'bg-gray-100'}`}>
-              <Bell className={`w-5 h-5 ${stats.assistance > 0 ? 'text-orange-600 animate-bounce' : 'text-gray-400'}`} />
+            <div className={`h-9 w-9 rounded-xl flex items-center justify-center ${stats.assistance > 0 ? 'bg-white/20' : 'bg-zinc-100'}`}>
+              <Bell className={`w-5 h-5 ${stats.assistance > 0 ? 'text-white animate-bounce' : 'text-zinc-400'}`} />
             </div>
           </div>
         </section>
@@ -765,13 +765,13 @@ function App() {
         {/* Search & Simulation Controller for Mobile */}
         <section className="flex flex-col sm:flex-row gap-3 mb-6 md:hidden">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-2.5 text-gray-400 w-4 h-4" />
+            <Search className="absolute left-3 top-2.5 text-zinc-400 w-4 h-4" />
             <input
               type="text"
               placeholder="Tìm kiếm bàn..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-white text-sm pl-9 pr-4 py-2.5 rounded-xl border border-[#E2D9C8] focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              className="search-input w-full bg-white text-sm pl-9 pr-4 py-2.5 rounded-xl border border-zinc-200 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
             />
           </div>
           {/* Quick status filter for mobile */}
@@ -779,7 +779,7 @@ function App() {
             <select
               value={statusFilter}
               onChange={(e: any) => setStatusFilter(e.target.value)}
-              className="bg-white border border-[#E2D9C8] text-sm rounded-xl px-3 py-2 focus:outline-none focus:border-primary font-medium"
+              className="bg-white border border-zinc-200 text-sm rounded-xl px-3 py-2 focus:outline-none focus:border-primary font-medium"
             >
               <option value="ALL">Tất cả trạng thái</option>
               <option value="EMPTY">Trống</option>
@@ -789,23 +789,23 @@ function App() {
 
             <button 
               onClick={() => setIsSimulationActive(!isSimulationActive)}
-              className={`text-xs px-3 py-2 rounded-xl font-bold border transition-all flex items-center gap-1.5 active:scale-95 ${isSimulationActive ? 'bg-primary/10 border-primary/20 text-primary' : 'bg-gray-100 border-gray-300 text-gray-500'}`}
+              className={`text-xs px-3 py-2 rounded-xl font-bold border transition-all flex items-center gap-1.5 active:scale-95 ${isSimulationActive ? 'bg-primary-light border-primary/20 text-primary' : 'bg-zinc-100 border-zinc-300 text-zinc-500'}`}
             >
-              <div className={`w-2 h-2 rounded-full ${isSimulationActive ? 'bg-primary animate-ping' : 'bg-gray-400'}`}></div>
+              <div className={`w-2 h-2 rounded-full ${isSimulationActive ? 'bg-primary animate-ping' : 'bg-zinc-400'}`}></div>
               Mô phỏng
             </button>
           </div>
         </section>
 
         {/* 2. Filter Tabs component */}
-        <section className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-[#C0392B]/10 pb-4 mb-6 gap-4">
+        <section className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-zinc-200/80 pb-4 mb-6 gap-4">
           <div className="flex items-center gap-2 overflow-x-auto no-scrollbar scroll-smooth">
             <button
               onClick={() => setActiveFilterTab('all')}
               className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold tracking-wide transition-all uppercase whitespace-nowrap active:scale-95 ${
                 activeFilterTab === 'all'
-                  ? 'bg-primary text-[#FFF8F6] shadow-md shadow-primary/20'
-                  : 'bg-white text-gray-600 border border-[#E2D9C8] hover:border-primary/50'
+                  ? 'bg-primary text-white shadow-md shadow-primary/20'
+                  : 'bg-white text-zinc-600 border border-zinc-200 hover:border-primary/50'
               }`}
             >
               Tất cả bàn
@@ -814,8 +814,8 @@ function App() {
               onClick={() => setActiveFilterTab('floor_1')}
               className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold tracking-wide transition-all uppercase whitespace-nowrap active:scale-95 ${
                 activeFilterTab === 'floor_1'
-                  ? 'bg-primary text-[#FFF8F6] shadow-md shadow-primary/20'
-                  : 'bg-white text-gray-600 border border-[#E2D9C8] hover:border-primary/50'
+                  ? 'bg-primary text-white shadow-md shadow-primary/20'
+                  : 'bg-white text-zinc-600 border border-zinc-200 hover:border-primary/50'
               }`}
             >
               Tầng 1 (A)
@@ -824,8 +824,8 @@ function App() {
               onClick={() => setActiveFilterTab('floor_2')}
               className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold tracking-wide transition-all uppercase whitespace-nowrap active:scale-95 ${
                 activeFilterTab === 'floor_2'
-                  ? 'bg-primary text-[#FFF8F6] shadow-md shadow-primary/20'
-                  : 'bg-white text-gray-600 border border-[#E2D9C8] hover:border-primary/50'
+                  ? 'bg-primary text-white shadow-md shadow-primary/20'
+                  : 'bg-white text-zinc-600 border border-zinc-200 hover:border-primary/50'
               }`}
             >
               Tầng 2 (B)
@@ -834,8 +834,8 @@ function App() {
               onClick={() => setActiveFilterTab('vip')}
               className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold tracking-wide transition-all uppercase whitespace-nowrap active:scale-95 ${
                 activeFilterTab === 'vip'
-                  ? 'bg-primary text-[#FFF8F6] shadow-md shadow-primary/20'
-                  : 'bg-white text-gray-600 border border-[#E2D9C8] hover:border-primary/50'
+                  ? 'bg-primary text-white shadow-md shadow-primary/20'
+                  : 'bg-white text-zinc-600 border border-zinc-200 hover:border-primary/50'
               }`}
             >
               Phòng VIP
@@ -847,26 +847,26 @@ function App() {
             {/* Simulation toggle */}
             <button 
               onClick={() => setIsSimulationActive(!isSimulationActive)}
-              className={`text-xs px-3 py-2 rounded-xl font-bold border transition-all flex items-center gap-2 hover:opacity-90 active:scale-95 ${isSimulationActive ? 'bg-primary/5 border-primary/20 text-primary' : 'bg-gray-100 border-gray-300 text-gray-500'}`}
+              className={`text-xs px-3 py-2 rounded-xl font-bold border transition-all flex items-center gap-2 hover:opacity-90 active:scale-95 ${isSimulationActive ? 'bg-primary-light border-primary/20 text-primary' : 'bg-zinc-100 border-zinc-300 text-zinc-500'}`}
               title="Kích hoạt mô phỏng thời gian ăn uống của khách, báo chuông hỗ trợ ngẫu nhiên và bếp làm xong món"
             >
               <span className="relative flex h-2.5 w-2.5">
-                <span className={`absolute inline-flex h-full w-full rounded-full opacity-75 ${isSimulationActive ? 'bg-primary animate-ping' : 'bg-gray-400'}`}></span>
-                <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${isSimulationActive ? 'bg-primary' : 'bg-gray-400'}`}></span>
+                <span className={`absolute inline-flex h-full w-full rounded-full opacity-75 ${isSimulationActive ? 'bg-primary animate-ping' : 'bg-zinc-400'}`}></span>
+                <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${isSimulationActive ? 'bg-primary' : 'bg-zinc-400'}`}></span>
               </span>
               Mô phỏng: {isSimulationActive ? 'BẬT' : 'TẮT'}
             </button>
 
             {/* Status Pills */}
-            <div className="bg-[#FAF6EE] p-1 rounded-xl border border-[#E2D9C8] flex items-center gap-1">
+            <div className="bg-zinc-100/80 p-1 rounded-xl border border-zinc-200 flex items-center gap-1">
               {(['ALL', 'EMPTY', 'DINING', 'WAITING_FOOD'] as const).map((st) => (
                 <button
                   key={st}
                   onClick={() => setStatusFilter(st)}
                   className={`px-3 py-1 rounded-lg text-[10px] font-extrabold uppercase transition-all whitespace-nowrap ${
                     statusFilter === st
-                      ? 'bg-white text-primary shadow-sm border border-[#E2D9C8]'
-                      : 'text-gray-500 hover:text-gray-900'
+                      ? 'bg-white text-primary shadow-sm border border-zinc-205'
+                      : 'text-zinc-500 hover:text-zinc-900'
                   }`}
                 >
                   {st === 'ALL' ? 'TẤT CẢ' : st === 'EMPTY' ? 'TRỐNG' : st === 'DINING' ? 'ĐANG ĂN' : 'CHỜ MÓN'}
@@ -879,10 +879,10 @@ function App() {
         {/* 3. Table Grid Matrix */}
         <section>
           {filteredTables.length === 0 ? (
-            <div className="bg-white border border-[#E2D9C8] rounded-2xl p-12 text-center shadow-premium">
+            <div className="bg-white border border-zinc-200 rounded-2xl p-12 text-center shadow-premium">
               <AlertCircle className="w-12 h-12 text-primary/40 mx-auto mb-3" />
-              <h3 className="font-bold text-lg text-gray-800">Không tìm thấy bàn nào khớp</h3>
-              <p className="text-sm text-gray-500 mt-1">Thử cập nhật bộ lọc trạng thái hoặc tìm số bàn khác.</p>
+              <h3 className="font-bold text-lg text-zinc-800">Không tìm thấy bàn nào khớp</h3>
+              <p className="text-sm text-zinc-500 mt-1">Thử cập nhật bộ lọc trạng thái hoặc tìm số bàn khác.</p>
               <button 
                 onClick={() => { setSearchQuery(''); setStatusFilter('ALL'); setActiveFilterTab('all'); }} 
                 className="mt-4 px-4 py-2 bg-primary text-white text-xs font-bold rounded-xl active-press"
@@ -895,20 +895,22 @@ function App() {
               {filteredTables.map((table) => {
                 
                 // Set status style properties according to specification
-                let cardStyle = ''
+                let cardStyle = 'bg-white border-orange-400 hover:border-orange-500'
                 let statusLabel = ''
                 let borderAnimation = ''
                 
+                let nameColor = 'text-black'
+                let guestBadgeStyle = 'bg-white border-orange-300 text-black'
+                let midTextColor = 'text-black'
+                let timeColor = 'text-black'
+                
                 if (table.status === 'EMPTY') {
-                  cardStyle = 'bg-status-empty-bg border-status-empty-border hover:border-gray-400'
                   statusLabel = 'TRỐNG'
                 } else if (table.status === 'DINING') {
-                  cardStyle = 'bg-status-dining-bg border-status-dining-border hover:border-primary'
                   statusLabel = 'ĐANG ĂN'
                 } else if (table.status === 'WAITING_FOOD') {
-                  cardStyle = 'bg-status-waiting-bg animate-blink'
                   statusLabel = 'CHỜ MÓN'
-                  borderAnimation = 'border-amber-400'
+                  borderAnimation = 'border-orange-500'
                 }
 
                 // Total order items tally count
@@ -925,7 +927,7 @@ function App() {
                   >
                     {/* Active alarm ring overlay */}
                     {table.assistanceRequested && (
-                      <div className="absolute top-0 right-0 left-0 bg-orange-600 text-white text-[9px] font-extrabold uppercase py-1 px-3 flex items-center justify-center gap-1.5 animate-pulse">
+                      <div className="absolute top-0 right-0 left-0 bg-primary text-white text-[9px] font-extrabold uppercase py-1 px-3 flex items-center justify-center gap-1.5 animate-pulse">
                         <Bell className="w-2.5 h-2.5 animate-bounce" />
                         <span>Yêu cầu phục vụ</span>
                       </div>
@@ -933,12 +935,12 @@ function App() {
 
                     {/* Table ID and Guest count row */}
                     <div className="flex justify-between items-start mt-2">
-                      <h3 className="font-extrabold text-xl text-gray-800 font-serif tracking-tight">
+                      <h3 className={`font-extrabold text-xl font-serif tracking-tight ${nameColor}`}>
                         {table.name}
                       </h3>
                       {table.status !== 'EMPTY' && (
-                        <div className="flex items-center gap-1 bg-white/60 backdrop-blur-xs px-2 py-0.5 rounded-lg border border-[#E2D9C8] text-[10px] font-bold text-gray-600">
-                          <Users className="w-3 h-3 text-gray-400" />
+                        <div className={`flex items-center gap-1 backdrop-blur-xs px-2 py-0.5 rounded-lg border text-[10px] font-bold ${guestBadgeStyle}`}>
+                          <Users className="w-3 h-3 opacity-70" />
                           <span>{table.guests}p</span>
                         </div>
                       )}
@@ -947,18 +949,22 @@ function App() {
                     {/* Mid segment: Table Information summary */}
                     <div className="my-5 min-h-[40px] flex flex-col justify-center">
                       {table.status === 'EMPTY' ? (
-                        <span className="text-[10px] text-gray-400 font-extrabold tracking-widest uppercase">Open Seat</span>
+                        <span className="text-[10px] text-black font-extrabold tracking-widest uppercase">Open Seat</span>
                       ) : (
                         <div className="text-left">
                           {/* Order list snippets preview */}
-                          <p className="text-[11px] font-bold text-gray-700 truncate">
+                          <p className={`text-[11px] font-bold truncate ${midTextColor}`}>
                             {table.orders.length > 0
                               ? table.orders.map((o) => `${o.quantity}x ${o.name.split(' ')[0]}`).join(', ')
                               : 'No items yet'}
                           </p>
                           {itemCount > 0 && (
-                            <span className="text-[10px] bg-primary/10 text-primary font-extrabold px-1.5 py-0.5 rounded-md mt-1 inline-block">
-                              {itemCount} item{itemCount > 1 ? 's' : ''} ordered
+                            <span className={`text-[10px] font-extrabold px-1.5 py-0.5 rounded-md mt-1 inline-block ${
+                              table.status === 'DINING'
+                                ? 'bg-white text-black border border-orange-300'
+                                : 'bg-white text-black border border-orange-300'
+                            }`}>
+                              {itemCount} món đã gọi
                             </span>
                           )}
                         </div>
@@ -966,15 +972,15 @@ function App() {
                     </div>
 
                     {/* Lower segment: Time & Status tag */}
-                    <div className="flex items-center justify-between border-t border-black/5 pt-3 mt-1">
+                    <div className="flex items-center justify-between border-t border-orange-200 pt-3 mt-1">
                       {/* Dining duration timer */}
                       {table.status !== 'EMPTY' ? (
-                        <div className="flex items-center gap-1 text-[11px] font-extrabold text-gray-500 font-mono">
-                          <Clock className="w-3 h-3 text-gray-400" />
+                        <div className={`flex items-center gap-1 text-[11px] font-extrabold font-mono ${timeColor}`}>
+                          <Clock className="w-3 h-3 opacity-70" />
                           <span>{table.duration} phút</span>
                         </div>
                       ) : (
-                        <div className="flex items-center gap-1 text-[11px] font-extrabold text-gray-400">
+                        <div className="flex items-center gap-1 text-[11px] font-extrabold text-black">
                           <Check className="w-3.5 h-3.5 text-emerald-500" />
                           <span>Trống</span>
                         </div>
@@ -984,10 +990,10 @@ function App() {
                       <span
                         className={`text-[9px] font-extrabold px-2 py-1 rounded-lg border uppercase tracking-wider ${
                           table.status === 'EMPTY'
-                            ? 'bg-gray-100 text-gray-500 border-gray-200'
+                            ? 'bg-white text-black border-orange-300'
                             : table.status === 'DINING'
-                            ? 'bg-[#FADBD8] text-[#922B21] border-[#E6B0AA]'
-                            : 'bg-[#FCF3CF] text-[#B7950B] border-[#F7DC6F]'
+                            ? 'bg-white text-black border-orange-300'
+                            : 'bg-white text-black border-orange-300'
                         }`}
                       >
                         {statusLabel}
@@ -1010,33 +1016,33 @@ function App() {
           <div className="absolute inset-0" onClick={() => setSelectedTable(null)}></div>
 
           {/* Modal Box */}
-          <div className="w-full sm:max-w-2xl bg-white rounded-t-[2.5rem] sm:rounded-[2rem] shadow-premium-lg border-t sm:border border-[#C0392B]/15 overflow-hidden z-10 animate-slide-up flex flex-col max-h-[92vh] sm:max-h-[85vh]">
+          <div className="w-full sm:max-w-2xl bg-white rounded-t-[2rem] sm:rounded-[2rem] shadow-premium-lg border-t sm:border border-zinc-200/80 overflow-hidden z-10 animate-slide-up flex flex-col max-h-[92vh] sm:max-h-[85vh]">
             
             {/* Pull handle indicator on mobile */}
-            <div className="h-1.5 w-16 bg-gray-300 rounded-full mx-auto my-3 sm:hidden"></div>
+            <div className="h-1.5 w-16 bg-zinc-350 rounded-full mx-auto my-3 sm:hidden"></div>
 
             {/* Modal Header */}
-            <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+            <div className="px-6 py-4 border-b border-zinc-100 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className={`h-10 w-10 rounded-xl flex items-center justify-center ${
-                  selectedTable.status === 'EMPTY' ? 'bg-gray-100' : 'bg-primary/10'
+                  selectedTable.status === 'EMPTY' ? 'bg-zinc-100' : 'bg-primary/10'
                 }`}>
                   <Utensils className={`w-5 h-5 ${
-                    selectedTable.status === 'EMPTY' ? 'text-gray-400' : 'text-primary'
+                    selectedTable.status === 'EMPTY' ? 'text-zinc-400' : 'text-primary'
                   }`} />
                 </div>
                 <div className="text-left">
-                  <h3 className="font-extrabold text-xl text-gray-800 font-serif">
-                    {selectedTable.name} <span className="text-xs text-gray-400 font-sans">({selectedTable.section === 'floor_1' ? 'Tầng 1' : selectedTable.section === 'floor_2' ? 'Tầng 2' : 'Khu VIP'})</span>
+                  <h3 className="font-extrabold text-xl text-zinc-800 font-serif">
+                    {selectedTable.name} <span className="text-xs text-zinc-450 font-sans">({selectedTable.section === 'floor_1' ? 'Tầng 1' : selectedTable.section === 'floor_2' ? 'Tầng 2' : 'Khu VIP'})</span>
                   </h3>
                   <div className="flex items-center gap-2 mt-0.5">
                     {selectedTable.status !== 'EMPTY' && (
-                      <span className="text-xs font-bold text-gray-500 font-mono flex items-center gap-1">
+                      <span className="text-xs font-bold text-zinc-550 font-mono flex items-center gap-1">
                         <Clock className="w-3.5 h-3.5" /> Đã ngồi: {selectedTable.duration} phút trước
                       </span>
                     )}
                     {selectedTable.assistanceRequested && (
-                      <span className="text-[9px] font-extrabold bg-orange-600 text-white px-2 py-0.5 rounded-md animate-pulse uppercase">
+                      <span className="text-[9px] font-extrabold bg-primary text-white px-2 py-0.5 rounded-md animate-pulse uppercase">
                         Cần hỗ trợ
                       </span>
                     )}
@@ -1046,7 +1052,7 @@ function App() {
               
               <button
                 onClick={() => setSelectedTable(null)}
-                className="h-10 w-10 bg-gray-100 hover:bg-gray-200 text-gray-500 rounded-full flex items-center justify-center transition-all active-press"
+                className="h-10 w-10 bg-zinc-100 hover:bg-zinc-200 text-zinc-550 rounded-full flex items-center justify-center transition-all active-press"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -1062,21 +1068,21 @@ function App() {
                   {/* Left Column: Table Details, Seating, and Status settings */}
                   <div className="flex-1 flex flex-col justify-between gap-4">
                     <div>
-                      <h4 className="text-xs font-extrabold text-gray-400 uppercase tracking-widest mb-3">Trạng thái bàn POS</h4>
+                      <h4 className="text-xs font-extrabold text-zinc-400 uppercase tracking-widest mb-3">Trạng thái bàn POS</h4>
                       
                       {/* Set seating configuration */}
                       {selectedTable.status === 'EMPTY' ? (
-                        <div className="bg-[#FAF6EE] border border-[#E2D9C8] rounded-2xl p-4 text-center">
-                          <p className="text-xs font-semibold text-gray-600 mb-3">Sức chứa: 2 đến 6 khách</p>
+                        <div className="bg-zinc-50 border border-zinc-200 rounded-2xl p-4 text-center">
+                          <p className="text-xs font-semibold text-zinc-600 mb-3">Sức chứa: 2 đến 6 khách</p>
                           <div className="flex items-center justify-center gap-2">
                             {[2, 3, 4, 6].map((num) => (
                               <button
                                 key={num}
                                 onClick={() => handleOpenTable(selectedTable.id, num)}
-                                className="h-11 w-12 bg-white text-gray-800 border border-[#E2D9C8] font-bold rounded-xl hover:border-primary hover:text-primary transition-all active-press flex items-center justify-center gap-0.5 text-sm"
+                                className="h-11 w-12 bg-white text-zinc-800 border border-zinc-200 font-bold rounded-xl hover:border-primary hover:text-primary transition-all active-press flex items-center justify-center gap-0.5 text-sm"
                               >
                                 <span>{num}</span>
-                                <Users className="w-3 h-3 text-gray-400" />
+                                <Users className="w-3 h-3 text-zinc-450" />
                               </button>
                             ))}
                           </div>
@@ -1090,11 +1096,11 @@ function App() {
                               className={`py-3 px-2 rounded-xl text-[10px] font-extrabold uppercase border text-center transition-all active-press ${
                                 selectedTable.status === status
                                   ? status === 'EMPTY'
-                                    ? 'bg-gray-100 text-gray-500 border-gray-300'
+                                    ? 'bg-zinc-100 text-zinc-500 border-zinc-300'
                                     : status === 'DINING'
-                                    ? 'bg-status-dining-bg text-status-dining-text border-[#E6B0AA]'
-                                    : 'bg-status-waiting-bg text-status-waiting-text border-[#F7DC6F] shadow-inner'
-                                  : 'bg-white border-[#E2D9C8] text-gray-600 hover:border-primary/50'
+                                    ? 'bg-white text-black border-orange-300 shadow-inner'
+                                    : 'bg-white text-black border-orange-300 shadow-inner'
+                                  : 'bg-white border-zinc-250 text-zinc-600 hover:border-primary/50'
                               }`}
                             >
                               {status === 'EMPTY' ? 'TRỐNG' : status === 'DINING' ? 'ĐANG ĂN' : 'CHỜ MÓN'}
@@ -1105,26 +1111,26 @@ function App() {
                     </div>
 
                     {/* Table Details Info Block */}
-                    <div className="bg-[#FAF6EE]/50 border border-[#E2D9C8]/65 rounded-2xl p-4 mt-2">
-                      <h4 className="text-xs font-bold text-gray-700 uppercase mb-2">Tổng quan phục vụ</h4>
+                    <div className="bg-zinc-50/50 border border-zinc-200/80 rounded-2xl p-4 mt-2">
+                      <h4 className="text-xs font-bold text-zinc-700 uppercase mb-2">Tổng quan phục vụ</h4>
                       <div className="grid grid-cols-2 gap-2 text-xs">
-                        <div className="bg-white p-2.5 rounded-xl border border-gray-100">
-                          <span className="text-gray-400 block text-[9px] font-bold uppercase">Số khách ngồi</span>
-                          <span className="text-sm font-bold text-gray-800 font-mono">{selectedTable.guests || 'Không'}</span>
+                        <div className="bg-white p-2.5 rounded-xl border border-zinc-100">
+                          <span className="text-zinc-400 block text-[9px] font-bold uppercase">Số khách ngồi</span>
+                          <span className="text-sm font-bold text-zinc-800 font-mono">{selectedTable.guests || 'Không'}</span>
                         </div>
-                        <div className="bg-white p-2.5 rounded-xl border border-gray-100">
-                          <span className="text-gray-400 block text-[9px] font-bold uppercase">Thời gian ngồi</span>
-                          <span className="text-sm font-bold text-gray-800 font-mono">{selectedTable.status === 'EMPTY' ? '--' : `${selectedTable.duration} phút`}</span>
+                        <div className="bg-white p-2.5 rounded-xl border border-zinc-100">
+                          <span className="text-zinc-400 block text-[9px] font-bold uppercase">Thời gian ngồi</span>
+                          <span className="text-sm font-bold text-zinc-800 font-mono">{selectedTable.status === 'EMPTY' ? '--' : `${selectedTable.duration} phút`}</span>
                         </div>
                       </div>
 
                       {/* Assistance Alert Banner */}
                       {selectedTable.assistanceRequested && (
-                        <div className="bg-orange-50 border border-orange-200 text-orange-800 rounded-xl p-3 mt-3 flex items-start gap-2.5">
-                          <AlertCircle className="w-5 h-5 text-orange-600 shrink-0 mt-0.5" />
+                        <div className="bg-primary-light border border-primary/20 text-primary rounded-xl p-3 mt-3 flex items-start gap-2.5">
+                          <AlertCircle className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                           <div className="text-left">
                             <p className="text-xs font-bold leading-tight">Yêu cầu nhân viên hỗ trợ!</p>
-                            <p className="text-[10px] text-orange-600 mt-0.5">Khách đã nhấn chuông báo động POS. Tắt chuông này sau khi phục vụ.</p>
+                            <p className="text-[10px] text-primary/80 mt-0.5">Khách đã nhấn chuông báo động POS. Tắt chuông này sau khi phục vụ.</p>
                           </div>
                         </div>
                       )}
@@ -1132,9 +1138,9 @@ function App() {
                   </div>
 
                   {/* Right Column: Ordered Items List & pricing summary */}
-                  <div className="flex-1 bg-[#FAF6EE]/30 border border-[#E2D9C8]/40 rounded-2xl p-4 flex flex-col justify-between">
+                  <div className="flex-1 bg-zinc-50/30 border border-zinc-200/50 rounded-2xl p-4 flex flex-col justify-between">
                     <div>
-                      <h4 className="text-xs font-extrabold text-gray-400 uppercase tracking-widest mb-3 flex items-center justify-between">
+                      <h4 className="text-xs font-extrabold text-zinc-400 uppercase tracking-widest mb-3 flex items-center justify-between">
                         <span>Món ăn đã gọi</span>
                         <span className="bg-primary/10 text-primary px-2.5 py-0.5 rounded-full text-[10px] font-bold">
                           {selectedTable.orders.reduce((sum, i) => sum + i.quantity, 0)} món
@@ -1144,16 +1150,16 @@ function App() {
                       {/* Orders scrolling area */}
                       <div className="max-h-[160px] overflow-y-auto pr-1 space-y-2.5">
                         {selectedTable.orders.length === 0 ? (
-                          <div className="text-center py-12 text-gray-400">
-                            <Utensils className="w-8 h-8 mx-auto mb-2 text-gray-300" />
+                          <div className="text-center py-12 text-zinc-400">
+                            <Utensils className="w-8 h-8 mx-auto mb-2 text-zinc-300" />
                             <p className="text-xs font-medium">Chưa gọi món nào.</p>
                           </div>
                         ) : (
                           selectedTable.orders.map((item) => (
-                            <div key={item.id} className="bg-white border border-gray-100 rounded-xl p-3 flex items-center justify-between shadow-sm">
+                            <div key={item.id} className="bg-white border border-zinc-100 rounded-xl p-3 flex items-center justify-between shadow-sm">
                               <div className="text-left max-w-[65%]">
-                                <p className="text-xs font-bold text-gray-800 leading-tight">{item.name}</p>
-                                <span className="text-[10px] text-gray-400 font-mono mt-0.5 block">
+                                <p className="text-xs font-bold text-zinc-800 leading-tight">{item.name}</p>
+                                <span className="text-[10px] text-zinc-400 font-mono mt-0.5 block">
                                   {formatPrice(item.price)} / món
                                 </span>
                               </div>
@@ -1162,15 +1168,15 @@ function App() {
                               <div className="flex items-center gap-2">
                                 <button
                                   onClick={() => handleDecreaseItemQuantity(item.id)}
-                                  className="h-8 w-8 bg-gray-100 text-gray-500 rounded-full flex items-center justify-center hover:bg-gray-200 active:scale-90 transition-all font-extrabold text-sm"
+                                  className="h-8 w-8 bg-zinc-100 text-zinc-500 rounded-full flex items-center justify-center hover:bg-zinc-200 active:scale-90 transition-all font-extrabold text-sm"
                                   title="Giảm số lượng"
                                 >
                                   -
                                 </button>
-                                <span className="text-xs font-bold font-mono text-gray-800 w-4 text-center">{item.quantity}</span>
+                                <span className="text-xs font-bold font-mono text-zinc-800 w-4 text-center">{item.quantity}</span>
                                 <button
                                   onClick={() => handleAddItemToOrder(item)}
-                                  className="h-8 w-8 bg-gray-100 text-gray-500 rounded-full flex items-center justify-center hover:bg-gray-200 active:scale-90 transition-all font-extrabold text-sm"
+                                  className="h-8 w-8 bg-zinc-100 text-zinc-500 rounded-full flex items-center justify-center hover:bg-zinc-200 active:scale-90 transition-all font-extrabold text-sm"
                                   title="Tăng số lượng"
                                 >
                                   +
@@ -1184,18 +1190,18 @@ function App() {
 
                     {/* Receipt Cost Tally */}
                     {selectedTable.orders.length > 0 && (
-                      <div className="border-t border-[#E2D9C8] pt-3 mt-4">
-                        <div className="flex justify-between text-xs text-gray-500 font-medium my-0.5">
+                      <div className="border-t border-zinc-200 pt-3 mt-4">
+                        <div className="flex justify-between text-xs text-zinc-500 font-medium my-0.5">
                           <span>Tạm tính</span>
                           <span className="font-mono">{formatPrice(calculateTotal(selectedTable.orders).subtotal)}</span>
                         </div>
-                        <div className="flex justify-between text-xs text-gray-500 font-medium my-0.5">
+                        <div className="flex justify-between text-xs text-zinc-500 font-medium my-0.5">
                           <span>VAT (8%) & Phí dịch vụ (5%)</span>
                           <span className="font-mono">
                             {formatPrice(calculateTotal(selectedTable.orders).vat + calculateTotal(selectedTable.orders).serviceCharge)}
                           </span>
                         </div>
-                        <div className="flex justify-between text-sm font-extrabold text-gray-800 pt-2 border-t border-dashed border-gray-200 mt-2">
+                        <div className="flex justify-between text-sm font-extrabold text-zinc-800 pt-2 border-t border-dashed border-zinc-200 mt-2">
                           <span>Tổng cộng</span>
                           <span className="text-primary font-mono">{formatPrice(calculateTotal(selectedTable.orders).total)}</span>
                         </div>
@@ -1206,7 +1212,7 @@ function App() {
                 </div>
 
                 {/* Main Action Buttons Grid (Touch-friendly minimum 44px height) */}
-                <div className="p-6 bg-gray-50 border-t border-gray-100 grid grid-cols-2 gap-3 sm:flex sm:items-center sm:justify-end">
+                <div className="p-6 bg-zinc-50 border-t border-zinc-200/60 grid grid-cols-2 gap-3 sm:flex sm:items-center sm:justify-end">
                   
                   {/* Action 1: Transfer Table */}
                   <button
@@ -1215,9 +1221,9 @@ function App() {
                       setTargetTableId('')
                     }}
                     disabled={selectedTable.status === 'EMPTY'}
-                    className="min-h-[44px] flex-1 bg-white hover:bg-gray-50 border border-gray-300 text-gray-700 font-bold rounded-xl text-xs sm:text-sm tracking-wide uppercase transition-all flex items-center justify-center gap-2 active:scale-95 disabled:opacity-50 disabled:pointer-events-none active-press"
+                    className="min-h-[44px] flex-1 bg-white hover:bg-zinc-50 border border-zinc-300 text-zinc-700 font-bold rounded-xl text-xs sm:text-sm tracking-wide uppercase transition-all flex items-center justify-center gap-2 active:scale-95 disabled:opacity-50 disabled:pointer-events-none active-press"
                   >
-                    <ArrowLeftRight className="w-4 h-4 text-gray-500" />
+                    <ArrowLeftRight className="w-4 h-4 text-zinc-500" />
                     <span>Chuyển bàn</span>
                   </button>
 
@@ -1225,16 +1231,16 @@ function App() {
                   <button
                     onClick={() => handleClearAssistance(selectedTable.id)}
                     disabled={!selectedTable.assistanceRequested}
-                    className="min-h-[44px] flex-1 bg-white hover:bg-emerald-50 border border-emerald-300 text-emerald-800 font-bold rounded-xl text-xs sm:text-sm tracking-wide uppercase transition-all flex items-center justify-center gap-2 active:scale-95 disabled:opacity-50 disabled:pointer-events-none active-press"
+                    className="min-h-[44px] flex-1 bg-white hover:bg-zinc-100 border border-zinc-300 text-zinc-800 font-bold rounded-xl text-xs sm:text-sm tracking-wide uppercase transition-all flex items-center justify-center gap-2 active:scale-95 disabled:opacity-50 disabled:pointer-events-none active-press"
                   >
-                    <Bell className="w-4 h-4 text-emerald-600" />
+                    <Bell className="w-4 h-4 text-zinc-600" />
                     <span>Tắt báo chuông</span>
                   </button>
 
                   {/* Action 3: Add Item */}
                   <button
                     onClick={() => setModalMode('add_item')}
-                    className="min-h-[44px] flex-1 bg-white hover:bg-[#FDEDEC] border border-[#E6B0AA] text-primary font-bold rounded-xl text-xs sm:text-sm tracking-wide uppercase transition-all flex items-center justify-center gap-2 active:scale-95 active-press"
+                    className="min-h-[44px] flex-1 bg-white hover:bg-primary-light border border-primary/30 text-primary font-bold rounded-xl text-xs sm:text-sm tracking-wide uppercase transition-all flex items-center justify-center gap-2 active:scale-95 active-press"
                   >
                     <Plus className="w-4.5 h-4.5 text-primary" />
                     <span>Thêm món</span>
@@ -1244,7 +1250,7 @@ function App() {
                   <button
                     onClick={() => setModalMode('billing')}
                     disabled={selectedTable.orders.length === 0}
-                    className="min-h-[44px] flex-[1.5] bg-primary hover:bg-[#A93226] text-[#FFF8F6] font-bold rounded-xl text-xs sm:text-sm tracking-wide uppercase shadow-md shadow-primary/25 transition-all flex items-center justify-center gap-2 active:scale-95 disabled:opacity-50 disabled:pointer-events-none active-press"
+                    className="min-h-[44px] flex-[1.5] bg-primary hover:bg-primary-hover text-white font-bold rounded-xl text-xs sm:text-sm tracking-wide uppercase shadow-md shadow-primary/25 transition-all flex items-center justify-center gap-2 active:scale-95 disabled:opacity-50 disabled:pointer-events-none active-press"
                   >
                     <CreditCard className="w-4.5 h-4.5 text-white" />
                     <span>Yêu cầu thanh toán</span>
@@ -1266,7 +1272,7 @@ function App() {
                       placeholder="Tìm món ăn hoặc thức uống..."
                       value={menuSearch}
                       onChange={(e) => setMenuSearch(e.target.value)}
-                      className="w-full bg-white text-sm pl-10 pr-4 py-2.5 rounded-xl border border-gray-300 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
+                      className="search-input w-full bg-white text-sm pl-10 pr-4 py-2.5 rounded-xl border border-gray-300 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
                     />
                   </div>
 
@@ -1302,11 +1308,11 @@ function App() {
                         key={item.id}
                         onClick={() => handleAddItemToOrder(item)}
                         className={`border rounded-xl p-3 flex items-center justify-between hover:border-primary/50 cursor-pointer active:scale-98 transition-all select-none ${
-                          quantityInCurrent > 0 ? 'bg-[#FDEDEC] border-[#E6B0AA]' : 'bg-white border-gray-200'
+                          quantityInCurrent > 0 ? 'bg-primary/5 border-primary/20' : 'bg-white border-zinc-200'
                         }`}
                       >
                         <div className="text-left">
-                          <p className="text-xs font-bold text-gray-800 leading-tight">{item.name}</p>
+                          <p className="text-xs font-bold text-zinc-800 leading-tight">{item.name}</p>
                           <span className="text-[10px] text-primary font-mono font-bold mt-1 block">
                             {formatPrice(item.price)}
                           </span>
@@ -1314,7 +1320,7 @@ function App() {
 
                         <div className="flex items-center gap-2 shrink-0 ml-4">
                           {quantityInCurrent > 0 && (
-                            <span className="bg-primary text-[#FFF8F6] text-[10px] font-extrabold h-6 px-2 rounded-lg flex items-center justify-center font-mono">
+                            <span className="bg-primary text-white text-[10px] font-extrabold h-6 px-2 rounded-lg flex items-center justify-center font-mono">
                               {quantityInCurrent} phần
                             </span>
                           )}
@@ -1328,8 +1334,8 @@ function App() {
                 </div>
 
                 {/* Close Bottom Buttons */}
-                <div className="p-6 bg-gray-50 border-t border-gray-100 flex items-center justify-between">
-                  <span className="text-xs font-bold text-gray-500">
+                <div className="p-6 bg-zinc-50 border-t border-zinc-100 flex items-center justify-between">
+                  <span className="text-xs font-bold text-zinc-500">
                     Thêm món trực tiếp vào {selectedTable.name}
                   </span>
                   <button
@@ -1347,15 +1353,15 @@ function App() {
               <div className="flex-1 flex flex-col overflow-y-auto">
                 <div className="p-6 flex-1 flex flex-col justify-between">
                   <div>
-                    <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 rounded-2xl p-4 text-xs text-left mb-5 flex items-start gap-2.5">
-                      <AlertCircle className="w-5 h-5 text-yellow-600 shrink-0" />
+                    <div className="bg-primary-light border border-primary/20 text-primary rounded-2xl p-4 text-xs text-left mb-5 flex items-start gap-2.5">
+                      <AlertCircle className="w-5 h-5 text-primary shrink-0" />
                       <div>
                         <p className="font-bold">Chuyển bàn phục vụ</p>
                         <p className="mt-0.5">Hành động này sẽ chuyển toàn bộ khách, bộ đếm giờ hoạt động và các món ăn đã gọi từ {selectedTable.name} sang bàn trống được chọn.</p>
                       </div>
                     </div>
 
-                    <h4 className="text-xs font-extrabold text-gray-400 uppercase tracking-widest mb-3 text-left">
+                    <h4 className="text-xs font-extrabold text-zinc-400 uppercase tracking-widest mb-3 text-left">
                       Chọn bàn trống đích
                     </h4>
 
@@ -1370,7 +1376,7 @@ function App() {
                             className={`min-h-[44px] py-2 px-3 border rounded-xl font-extrabold text-xs transition-all active-press ${
                               targetTableId === emptyTable.id
                                 ? 'bg-primary text-white border-primary shadow-md'
-                                : 'bg-white border-[#E2D9C8] text-gray-700 hover:border-primary/50'
+                                : 'bg-white border-zinc-200 text-zinc-700 hover:border-primary/50'
                             }`}
                           >
                             {emptyTable.name}
@@ -1572,7 +1578,7 @@ function App() {
               toast.type === 'success'
                 ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
                 : toast.type === 'warning'
-                ? 'bg-orange-50 border-orange-200 text-orange-800 animate-pulse'
+                ? 'bg-primary border-primary text-white animate-pulse'
                 : toast.type === 'error'
                 ? 'bg-rose-50 border-rose-200 text-rose-800'
                 : 'bg-indigo-50 border-indigo-200 text-indigo-800'
@@ -1581,7 +1587,7 @@ function App() {
             {toast.type === 'success' ? (
               <CheckCircle className="w-5 h-5 text-emerald-600 shrink-0" />
             ) : toast.type === 'warning' ? (
-              <Bell className="w-5 h-5 text-orange-600 shrink-0" />
+              <Bell className="w-5 h-5 text-white shrink-0" />
             ) : toast.type === 'error' ? (
               <AlertCircle className="w-5 h-5 text-rose-600 shrink-0" />
             ) : (
@@ -1592,7 +1598,7 @@ function App() {
             </div>
             <button
               onClick={() => setToasts((prev) => prev.filter((t) => t.id !== toast.id))}
-              className="text-gray-400 hover:text-gray-600 font-extrabold text-sm ml-2.5"
+              className={`font-extrabold text-sm ml-2.5 ${toast.type === 'warning' ? 'text-white hover:text-white' : 'text-gray-400 hover:text-gray-600'}`}
             >
               ×
             </button>
@@ -1647,10 +1653,10 @@ function App() {
             }
           }}
           className={`flex flex-col items-center gap-1.5 transition-all active:scale-90 ${
-            stats.assistance > 0 ? 'text-orange-600' : 'text-gray-400'
+            stats.assistance > 0 ? 'text-primary' : 'text-gray-400'
           }`}
         >
-          <Bell className={`w-5 h-5 ${stats.assistance > 0 ? 'animate-bounce text-orange-600' : ''}`} />
+          <Bell className={`w-5 h-5 ${stats.assistance > 0 ? 'animate-bounce text-primary' : ''}`} />
           <span className="text-[10px] font-bold">BÁO ĐỘNG</span>
         </button>
       </nav>
