@@ -2,7 +2,6 @@ import { useState } from 'react'
 import {
   ChefHat,
   Utensils,
-  Flame,
   Search,
   Bell,
   ShoppingCart,
@@ -11,10 +10,7 @@ import {
   X,
   CreditCard,
   DollarSign,
-  Coffee,
   HelpCircle,
-  Clock,
-  History,
   QrCode,
   Check,
   UserCheck
@@ -27,6 +23,7 @@ interface OrderItem {
   price: number
   quantity: number
   category: 'mains' | 'appetizers' | 'drinks'
+  imageUrl?: string
   status?: 'pending' | 'cooking' | 'served'
 }
 
@@ -85,6 +82,7 @@ export function CustomerOrderPortal({
   const [cart, setCart] = useState<{ [itemId: string]: number }>({})
   const [activeCategory, setActiveCategory] = useState<'all' | 'mains' | 'appetizers' | 'drinks'>('all')
   const [searchQuery, setSearchQuery] = useState<string>('')
+  const [isCartOpen, setIsCartOpen] = useState<boolean>(false)
   const [isHistoryOpen, setIsHistoryOpen] = useState<boolean>(false)
   const [isPaymentOpen, setIsPaymentOpen] = useState<boolean>(false)
   const [paymentOption, setPaymentOption] = useState<'cash' | 'transfer' | null>(null)
@@ -174,6 +172,7 @@ export function CustomerOrderPortal({
   const tableOrdersTax = tableOrdersSubtotal * 0.08
   const tableOrdersServiceCharge = tableOrdersSubtotal * 0.05
   const tableOrdersTotal = tableOrdersSubtotal + tableOrdersTax + tableOrdersServiceCharge
+  const cartItemCount = Object.values(cart).reduce((a, b) => a + b, 0)
 
   // Call Staff Assistance Request
   const handleCallStaff = () => {
@@ -219,6 +218,7 @@ export function CustomerOrderPortal({
     )
 
     setCart({})
+    setIsCartOpen(false)
     showToast('Đã gửi thực đơn xuống bếp chế biến!', 'success')
   }
 
@@ -262,19 +262,8 @@ export function CustomerOrderPortal({
     return matchesCategory && matchesSearch
   })
 
-  // Category Icon helper
-  const getCategoryIcon = (category: string) => {
-    switch (category) {
-      case 'mains':
-        return <Flame className="w-4 h-4" />
-      case 'appetizers':
-        return <Utensils className="w-4 h-4" />
-      case 'drinks':
-        return <Coffee className="w-4 h-4" />
-      default:
-        return <Utensils className="w-4 h-4" />
-    }
-  }
+  const getDishImage = (item: Pick<OrderItem, 'id' | 'imageUrl'>) =>
+    item.imageUrl || menuDatabase.find((menuItem) => menuItem.id === item.id)?.imageUrl
 
   // If no table has been selected yet, show table selector splash screen
   if (!selectedTableId) {
@@ -313,15 +302,14 @@ export function CustomerOrderPortal({
           <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-4">
             {tables.map((table) => {
               let statusText = 'Bàn trống'
-              let colorClasses = 'border-orange-400 bg-white hover:border-orange-500'
+              let colorClasses = 'border-black bg-white hover:border-black'
               let textClasses = 'text-black'
-              let metaTextClasses = 'text-black'
 
               if (table.status === 'DINING') {
                 statusText = 'Đang dùng bữa'
               } else if (table.status === 'WAITING_FOOD') {
                 statusText = 'Đang chờ món'
-                colorClasses = 'border-orange-500 bg-white hover:border-orange-600'
+                colorClasses = 'border-black bg-white hover:border-black'
               }
 
               return (
@@ -333,15 +321,13 @@ export function CustomerOrderPortal({
                   <span className={`font-serif font-extrabold text-lg block ${textClasses}`}>
                     {table.name}
                   </span>
-                  <span className={`text-[10px] font-bold font-sans block mt-1 ${metaTextClasses}`}>
-                    {table.section === 'floor_1' ? 'Tầng 1' : table.section === 'floor_2' ? 'Tầng 2' : 'Phòng VIP'}
-                  </span>
+                  {/* section label removed - show only table name */}
                   <span className={`text-[9px] font-extrabold uppercase px-2 py-0.5 rounded-md mt-2 tracking-wide inline-block ${
                     table.status === 'EMPTY' 
-                      ? 'bg-white text-black border border-orange-300' 
+                      ? 'bg-white text-black border border-black' 
                       : table.status === 'WAITING_FOOD'
-                      ? 'bg-white text-black border border-orange-300'
-                      : 'bg-white text-black border border-orange-300'
+                      ? 'bg-white text-black border border-black'
+                      : 'bg-white text-black border border-black'
                   }`}>
                     {statusText}
                   </span>
@@ -422,7 +408,7 @@ export function CustomerOrderPortal({
               <div className="flex items-center gap-2">
                 <span className="font-extrabold text-lg text-gray-800 font-serif">{activeTable?.name}</span>
                 <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full uppercase font-mono ${
-                  activeTable?.status === 'WAITING_FOOD' ? 'bg-white text-black border border-orange-300' : 'bg-white text-black border border-orange-300'
+                  activeTable?.status === 'WAITING_FOOD' ? 'bg-white text-black border border-black' : 'bg-white text-black border border-black'
                 }`}>
                   {activeTable?.status === 'WAITING_FOOD' ? 'Đang chờ món' : 'Đang chọn món'}
                 </span>
@@ -432,17 +418,50 @@ export function CustomerOrderPortal({
           </div>
 
           {/* Quick Buttons row */}
-          <div className="grid grid-cols-2 sm:flex sm:items-center gap-2 w-full sm:w-auto">
+          <div className="grid grid-cols-2 lg:flex lg:items-center gap-2 w-full lg:w-auto">
+            <div className="col-span-2 lg:col-span-1 p-0 flex flex-col sm:flex-row gap-2 items-center lg:w-auto">
+              <div className="relative w-full sm:w-56">
+                <Search className="absolute left-3 top-2.5 text-gray-400 w-3.5 h-3.5" />
+                <input
+                  type="text"
+                  placeholder="Tìm món ăn ngon..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="search-input w-full bg-[#FAF6EE] text-xs pl-9 pr-4 py-2 rounded-xl border border-[#E2D9C8] focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
+                />
+              </div>
+
+              <div className="flex gap-1.5 overflow-x-auto no-scrollbar w-full sm:w-auto">
+                {([
+                  { id: 'all', label: 'Tất cả' },
+                  { id: 'mains', label: 'Món chính' },
+                  { id: 'appetizers', label: 'Khai vị' },
+                  { id: 'drinks', label: 'Đồ uống' }
+                ] as const).map((tab) => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveCategory(tab.id)}
+                    className={`px-3 py-1.5 rounded-lg text-[10px] font-extrabold uppercase transition-all whitespace-nowrap ${
+                      activeCategory === tab.id
+                        ? 'bg-primary text-white shadow-sm'
+                        : 'bg-[#FAF6EE] text-gray-500 hover:text-gray-900 border border-[#E2D9C8]/40'
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+            </div>
             
             {/* View history of ordered dishes */}
             {(activeTable?.orders.length ?? 0) > 0 && (
               <button
                 onClick={() => setIsHistoryOpen(true)}
-                className="px-3 py-2 bg-white hover:bg-gray-50 border border-gray-300 text-gray-700 font-bold rounded-xl text-xs uppercase flex items-center gap-1.5 transition-all active-press"
-                title="Xem món ăn đã gọi"
+                className="px-3 py-2 bg-zinc-900 hover:bg-zinc-800 border border-white/20 text-white font-bold rounded-xl text-xs uppercase flex items-center gap-1.5 transition-all active-press"
+                title="Thanh toán"
               >
-                <History className="w-4 h-4 text-gray-500" />
-                <span className="hidden sm:inline">Món đã gọi</span>
+                <CreditCard className="w-4 h-4 text-white" />
+                <span className="hidden sm:inline text-white">Thanh toán</span>
               </button>
             )}
 
@@ -477,45 +496,8 @@ export function CustomerOrderPortal({
         {/* Left Column: Menu Browsing Workspace (65% width) */}
         <section className="flex-1 flex flex-col gap-5 overflow-visible">
           
-          {/* Categories bar and Search bar */}
-          <div className="bg-white border border-[#E2D9C8]/60 p-4 rounded-2xl shadow-xs flex flex-col sm:flex-row gap-4 items-center shrink-0">
-            {/* Search */}
-            <div className="relative w-full sm:w-60">
-              <Search className="absolute left-3 top-2.5 text-gray-400 w-3.5 h-3.5" />
-              <input
-                type="text"
-                placeholder="Tìm món ăn ngon..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="search-input w-full bg-[#FAF6EE] text-xs pl-9 pr-4 py-2 rounded-xl border border-[#E2D9C8] focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
-              />
-            </div>
-
-            {/* Category selection */}
-            <div className="flex gap-1.5 overflow-x-auto no-scrollbar w-full sm:w-auto">
-              {([
-                { id: 'all', label: 'Tất cả' },
-                { id: 'mains', label: 'Món chính' },
-                { id: 'appetizers', label: 'Khai vị' },
-                { id: 'drinks', label: 'Đồ uống' }
-              ] as const).map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveCategory(tab.id)}
-                  className={`px-3.5 py-1.5 rounded-lg text-xs font-extrabold uppercase transition-all whitespace-nowrap ${
-                    activeCategory === tab.id
-                      ? 'bg-primary text-white shadow-sm'
-                      : 'bg-[#FAF6EE] text-gray-500 hover:text-gray-900 border border-[#E2D9C8]/40'
-                  }`}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
           {/* Menu Items Touch-friendly Grid */}
-          <div className="flex-grow overflow-visible grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 auto-rows-max items-start content-start gap-4 pr-1 pb-4">
+          <div className="flex-grow overflow-visible grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-5 auto-rows-max items-start content-start gap-1.5 pr-0 pb-4">
             {filteredMenu.map((item) => {
               const qtyInCart = cart[item.id] || 0
 
@@ -523,7 +505,7 @@ export function CustomerOrderPortal({
                 <div
                   key={item.id}
                   onClick={() => handleAddToCart(item.id)}
-                  className="relative bg-white border border-[#E2D9C8]/60 rounded-2xl overflow-hidden flex flex-col justify-between shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 group cursor-pointer active-press"
+                  className="relative bg-white border border-black rounded-lg overflow-hidden flex flex-col aspect-square shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 group cursor-pointer active-press"
                 >
                   {qtyInCart > 0 && (
                     <span className="absolute top-3 right-3 z-10 min-w-7 h-7 px-2 rounded-full bg-primary text-white text-xs font-extrabold font-mono flex items-center justify-center shadow-md shadow-primary/20">
@@ -531,44 +513,45 @@ export function CustomerOrderPortal({
                     </span>
                   )}
 
-                  {/* Visual Category badge and Header */}
-                  <div className="p-4 pr-12 text-left">
-                    <span className="inline-flex items-center gap-1 text-[9px] bg-primary/5 text-primary font-bold px-2 py-0.5 rounded-md uppercase font-mono">
-                      {getCategoryIcon(item.category)}
-                      <span>{item.category === 'mains' ? 'Món chính' : item.category === 'appetizers' ? 'Khai vị' : 'Đồ uống'}</span>
-                    </span>
+                  {getDishImage(item) && (
+                    <img
+                      src={getDishImage(item)}
+                      alt={item.name}
+                      className="h-[72%] w-full object-cover shrink-0"
+                      loading="lazy"
+                    />
+                  )}
 
-                    <h4 className="font-extrabold text-sm text-gray-800 leading-tight mt-2.5 group-hover:text-primary transition-all">
+                  <div className="h-[15%] bg-white px-3 pt-2 pr-14 text-left shrink-0">
+                    <h4 className="font-extrabold text-sm text-gray-800 leading-tight truncate group-hover:text-primary transition-all">
                       {item.name}
                     </h4>
-                    
-                    <span className="text-[10px] text-gray-400 font-mono mt-1 block">Mã món: #{item.id}</span>
                   </div>
 
                   {/* Quantity Actions / Add To Cart bottom row */}
-                  <div className="border-t border-gray-100 p-4 bg-gray-50 flex items-center justify-between shrink-0">
-                    <span className="font-extrabold font-mono text-sm text-gray-800">
+                  <div className="h-[13%] px-3 pb-2 bg-white flex items-center justify-between shrink-0">
+                    <span className="font-bold font-mono text-xs text-black/55">
                       {formatPrice(item.price)}
                     </span>
 
                     {qtyInCart > 0 ? (
-                      <div className="flex items-center gap-2.5 bg-white border border-gray-200 rounded-xl px-2 py-1">
+                      <div className="flex items-center gap-3 bg-white border border-gray-200 rounded-xl px-2.5 py-1.5">
                         <button
                           onClick={(e) => {
                             e.stopPropagation()
                             handleUpdateCartQty(item.id, -1)
                           }}
-                          className="h-6 w-6 rounded-full bg-gray-100 text-gray-700 font-extrabold flex items-center justify-center hover:bg-gray-200 active:scale-90"
+                          className="h-8 w-8 rounded-full bg-gray-100 text-gray-700 font-extrabold text-base flex items-center justify-center hover:bg-gray-200 active:scale-90"
                         >
                           -
                         </button>
-                        <span className="font-bold font-mono text-xs text-gray-800 w-4 text-center">{qtyInCart}</span>
+                        <span className="font-bold font-mono text-sm text-gray-800 w-5 text-center">{qtyInCart}</span>
                         <button
                           onClick={(e) => {
                             e.stopPropagation()
                             handleUpdateCartQty(item.id, 1)
                           }}
-                          className="h-6 w-6 rounded-full bg-gray-100 text-gray-700 font-extrabold flex items-center justify-center hover:bg-gray-200 active:scale-90"
+                          className="h-8 w-8 rounded-full bg-gray-100 text-gray-700 font-extrabold text-base flex items-center justify-center hover:bg-gray-200 active:scale-90"
                         >
                           +
                         </button>
@@ -592,8 +575,11 @@ export function CustomerOrderPortal({
 
         </section>
 
-        {/* Right Column: Customer Cart & Checkout Panel (35% width) */}
-        <section className="w-full lg:w-[35%] bg-white border border-[#E2D9C8]/60 rounded-3xl overflow-hidden flex flex-col shadow-sm shrink-0 min-h-[450px]">
+        {/* Customer cart opens from the floating cart button. */}
+        {isCartOpen && (
+        <section className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-4">
+          <div className="absolute inset-0" onClick={() => setIsCartOpen(false)}></div>
+          <div className="relative z-10 w-full max-w-md max-h-[90vh] bg-white border border-[#E2D9C8]/60 rounded-3xl overflow-hidden flex flex-col shadow-premium-lg">
           
           {/* Cart Header details */}
           <div className="bg-[#FAF6EE] border-b border-[#E2D9C8]/40 px-5 py-4 flex items-center justify-between shrink-0 text-left">
@@ -601,9 +587,18 @@ export function CustomerOrderPortal({
               <ShoppingCart className="w-4.5 h-4.5 text-primary" />
               <h3 className="font-extrabold text-sm text-gray-800 uppercase tracking-wide">Giỏ hàng đang chọn</h3>
             </div>
-            <span className="text-[10px] bg-primary/10 text-primary font-bold px-2 py-0.5 rounded-md font-mono">
-              {Object.values(cart).reduce((a, b) => a + b, 0)} MÓN
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] bg-primary/10 text-primary font-bold px-2 py-0.5 rounded-md font-mono">
+                {cartItemCount} MÓN
+              </span>
+              <button
+                onClick={() => setIsCartOpen(false)}
+                className="h-8 w-8 bg-white hover:bg-gray-100 text-gray-500 rounded-full flex items-center justify-center transition-all active-press"
+                title="Đóng giỏ hàng"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
           </div>
 
           {/* Cart item listing rows */}
@@ -620,10 +615,20 @@ export function CustomerOrderPortal({
                 if (!item) return null
 
                 return (
-                  <div key={itemId} className="py-3 flex items-center justify-between text-xs text-left">
-                    <div className="max-w-[60%] min-w-0">
-                      <span className="font-bold text-gray-800 leading-snug block">{item.name}</span>
-                      <span className="text-[10px] font-mono text-gray-400 block mt-0.5">{formatPrice(item.price)}</span>
+                  <div key={itemId} className="py-3 flex items-center justify-between gap-3 text-xs text-left">
+                    <div className="flex items-center gap-3 min-w-0">
+                      {getDishImage(item) && (
+                        <img
+                          src={getDishImage(item)}
+                          alt={item.name}
+                          className="h-10 w-10 rounded-lg object-cover border border-gray-100 shrink-0"
+                          loading="lazy"
+                        />
+                      )}
+                      <div className="min-w-0">
+                        <span className="font-bold text-gray-800 leading-snug block">{item.name}</span>
+                        <span className="text-[10px] font-mono text-gray-400 block mt-0.5">{formatPrice(item.price)}</span>
+                      </div>
                     </div>
 
                     <div className="flex items-center gap-2 shrink-0">
@@ -682,24 +687,27 @@ export function CustomerOrderPortal({
                 </button>
               )}
 
-              {/* Request Final Check out button */}
-              {(activeTable?.orders.length ?? 0) > 0 && (
-                <button
-                  onClick={() => setIsPaymentOpen(true)}
-                  disabled={Object.keys(cart).length > 0} // finish ordering new stuff first
-                  className="w-full min-h-[46px] bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold rounded-xl text-xs uppercase tracking-wider active-press transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:pointer-events-none shadow-md shadow-emerald-200"
-                  title="Yêu cầu thanh toán hóa đơn bàn này"
-                >
-                  <CreditCard className="w-4 h-4 text-white" />
-                  <span>Yêu cầu thanh toán ({formatPrice(tableOrdersTotal)})</span>
-                </button>
-              )}
             </div>
           </div>
 
+          </div>
         </section>
+        )}
 
       </main>
+
+      <button
+        onClick={() => setIsCartOpen(true)}
+        className="fixed right-4 bottom-24 sm:right-6 sm:bottom-6 z-40 h-14 w-14 bg-primary hover:bg-[#A93226] text-white rounded-full shadow-lg shadow-primary/30 flex items-center justify-center active-press"
+        title="Mở giỏ hàng"
+      >
+        <ShoppingCart className="w-6 h-6 text-white" />
+        {cartItemCount > 0 && (
+          <span className="absolute -top-1 -right-1 min-w-6 h-6 px-1 rounded-full bg-white text-primary border border-primary text-[10px] font-extrabold font-mono flex items-center justify-center">
+            {cartItemCount}
+          </span>
+        )}
+      </button>
 
       {/* --- FLOATING DIALOGS & OVERLAYS --- */}
 
@@ -710,8 +718,8 @@ export function CustomerOrderPortal({
           <div className="w-full max-w-sm bg-white rounded-3xl border border-[#C0392B]/10 shadow-premium-lg p-6 z-10 animate-slide-up">
             <div className="flex justify-between items-start mb-4">
               <div className="flex items-center gap-2">
-                <History className="w-5 h-5 text-primary" />
-                <h3 className="font-extrabold text-lg text-gray-800 font-serif">Món ăn đã gọi</h3>
+                <CreditCard className="w-5 h-5 text-primary" />
+                <h3 className="font-extrabold text-lg text-gray-800 font-serif">Thanh toán</h3>
               </div>
               <button
                 onClick={() => setIsHistoryOpen(false)}
@@ -726,39 +734,26 @@ export function CustomerOrderPortal({
               
               <div className="max-h-[220px] overflow-y-auto divide-y divide-gray-100 pr-1">
                 {activeTable?.orders.map((item) => {
-                  const status = item.status || 'pending'
                   return (
-                    <div key={item.id} className="py-2.5 flex items-center justify-between text-xs border-b border-gray-50 last:border-0">
-                      <div className="text-left max-w-[60%]">
-                        <span className="font-bold text-gray-800 block">{item.name}</span>
-                        <span className="text-[10px] text-gray-400 mt-0.5 block">{formatPrice(item.price)} x{item.quantity}</span>
+                    <div key={item.id} className="py-2.5 flex items-center justify-between gap-3 text-xs border-b border-gray-50 last:border-0">
+                      <div className="flex items-center gap-3 min-w-0">
+                        {getDishImage(item) && (
+                          <img
+                            src={getDishImage(item)}
+                            alt={item.name}
+                            className="h-10 w-10 rounded-lg object-cover border border-gray-100 shrink-0"
+                            loading="lazy"
+                          />
+                        )}
+                        <div className="text-left min-w-0">
+                          <span className="font-bold text-gray-800 block">{item.name}</span>
+                          <span className="text-[10px] text-gray-400 mt-0.5 block">{formatPrice(item.price)} x{item.quantity}</span>
+                        </div>
                       </div>
                       
-                      {/* Real-time Dish Status Badge */}
                       <div className="flex items-center gap-2">
-                        <span className={`text-[8px] font-extrabold uppercase px-2 py-0.5 rounded-full border tracking-wider flex items-center gap-1 ${
-                          status === 'served'
-                            ? 'bg-emerald-50 border-emerald-200 text-emerald-700 font-bold'
-                            : status === 'cooking'
-                            ? 'bg-amber-50 border-amber-200 text-amber-700 animate-pulse font-bold'
-                            : 'bg-gray-100 border-gray-200 text-gray-700'
-                        }`}>
-                          {status === 'served' ? (
-                            <>
-                              <Check className="w-2.5 h-2.5" />
-                              <span>Đã phục vụ</span>
-                            </>
-                          ) : status === 'cooking' ? (
-                            <>
-                              <Flame className="w-2.5 h-2.5 text-amber-500 animate-bounce" />
-                              <span>Đang nấu</span>
-                            </>
-                          ) : (
-                            <>
-                              <Clock className="w-2.5 h-2.5 text-gray-400" />
-                              <span>Chờ nấu</span>
-                            </>
-                          )}
+                        <span className="min-w-8 h-7 px-2 rounded-full bg-primary text-white text-xs font-extrabold font-mono flex items-center justify-center">
+                          x{item.quantity}
                         </span>
                         
                         <span className="font-mono font-bold text-gray-700 shrink-0 min-w-[70px] text-right">
@@ -788,6 +783,18 @@ export function CustomerOrderPortal({
                   <span className="font-mono">{formatPrice(tableOrdersTotal)}</span>
                 </div>
               </div>
+
+              <button
+                onClick={() => {
+                  setIsHistoryOpen(false)
+                  setIsPaymentOpen(true)
+                }}
+                className="w-full min-h-[46px] bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold rounded-xl text-xs uppercase tracking-wider active-press transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md shadow-emerald-200"
+                title="Yêu cầu thanh toán hóa đơn bàn này"
+              >
+                <CreditCard className="w-4 h-4 text-white" />
+                <span>Yêu cầu thanh toán ({formatPrice(tableOrdersTotal)})</span>
+              </button>
 
               <button
                 onClick={() => setIsHistoryOpen(false)}

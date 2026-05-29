@@ -14,15 +14,18 @@ import {
   X,
   Plus,
   CheckCircle,
-  ChefHat
+  ChefHat,
+  Pencil,
+  Trash2
 } from 'lucide-react'
 
 // Define data models
 interface MenuItem {
   id: string
   name: string
-  category: 'mains' | 'appetizers' | 'drinks'
+  category: 'mains' | 'appetizers' | 'desserts' | 'drinks'
   price: number
+  imageUrl?: string
   inStock: boolean
   portionsSold: number
 }
@@ -39,8 +42,16 @@ interface StaffMember {
   id: string
   name: string
   role: 'Quản lý' | 'Bếp trưởng' | 'Phục vụ' | 'Thu ngân'
-  shift: 'Ca sáng (08:00 - 16:00)' | 'Ca tối (16:00 - 24:00)' | 'Cả ngày'
-  status: 'Đang làm' | 'Nghỉ' | 'Đang nghỉ giải lao'
+  shift: 'Ca sáng (08:00 - 16:00)' | 'Ca tối (16:00 - 24:00)' | 'Parttime'
+  status: 'Đang làm' | 'Nghỉ'
+  accountUsername: string
+  accountPassword: string
+}
+
+interface DiningTableConfig {
+  id: string
+  name: string
+  capacity: number
 }
 
 interface SettledInvoice {
@@ -69,18 +80,21 @@ export function AdminDashboard({ onBackToServerView }: AdminDashboardProps) {
 
   // 2. Mock Inventory database
   const [inventory, setInventory] = useState<MenuItem[]>([
-    { id: 'm1', name: 'Phở Bò Wagyu', category: 'mains', price: 150000, inStock: true, portionsSold: 120 },
-    { id: 'm2', name: 'Bún Chả Hà Nội Than Hoa', category: 'mains', price: 95000, inStock: true, portionsSold: 98 },
-    { id: 'm3', name: 'Mực Nướng Hạ Long', category: 'mains', price: 185000, inStock: true, portionsSold: 84 },
-    { id: 'm4', name: 'Cua Rang Trứng Muối', category: 'mains', price: 320000, inStock: true, portionsSold: 65 },
-    { id: 'm5', name: 'Thịt Kho Tàu Nồi Đất Khói', category: 'mains', price: 165000, inStock: true, portionsSold: 142 },
-    { id: 'a1', name: 'Gỏi Cuốn Tươi (3 cuốn)', category: 'appetizers', price: 65000, inStock: true, portionsSold: 110 },
-    { id: 'a2', name: 'Gỏi Ngó Sen Tôm Thịt', category: 'appetizers', price: 110000, inStock: false, portionsSold: 42 },
-    { id: 'a3', name: 'Chả Giò Chiên Giòn', category: 'appetizers', price: 85000, inStock: true, portionsSold: 76 },
-    { id: 'd1', name: 'Cà Phê Trứng Việt Nam', category: 'drinks', price: 45000, inStock: true, portionsSold: 130 },
-    { id: 'd2', name: 'Trà Vải Đặc Biệt', category: 'drinks', price: 45000, inStock: true, portionsSold: 115 },
-    { id: 'd3', name: 'Bia Tiger Tươi (Ly)', category: 'drinks', price: 35000, inStock: true, portionsSold: 180 },
-    { id: 'd4', name: 'Trà Đào Sả Lạnh', category: 'drinks', price: 40000, inStock: true, portionsSold: 54 }
+    { id: 'm1', name: 'Phở Bò Wagyu', category: 'mains', price: 150000, imageUrl: 'https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?auto=format&fit=crop&w=600&q=80', inStock: true, portionsSold: 120 },
+    { id: 'm2', name: 'Bún Chả Hà Nội Than Hoa', category: 'mains', price: 95000, imageUrl: 'https://images.unsplash.com/photo-1569058242253-92a9c755a0ec?auto=format&fit=crop&w=600&q=80', inStock: true, portionsSold: 98 },
+    { id: 'm3', name: 'Mực Nướng Hạ Long', category: 'mains', price: 185000, imageUrl: 'https://images.unsplash.com/photo-1559737558-2f5a35f4523b?auto=format&fit=crop&w=600&q=80', inStock: true, portionsSold: 84 },
+    { id: 'm4', name: 'Cua Rang Trứng Muối', category: 'mains', price: 320000, imageUrl: 'https://images.unsplash.com/photo-1559737558-2f5a35f4523b?auto=format&fit=crop&w=600&q=80', inStock: true, portionsSold: 65 },
+    { id: 'm5', name: 'Thịt Kho Tàu Nồi Đất Khói', category: 'mains', price: 165000, imageUrl: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80', inStock: true, portionsSold: 142 },
+    { id: 'a1', name: 'Gỏi Cuốn Tươi (3 cuốn)', category: 'appetizers', price: 65000, imageUrl: 'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=600&q=80', inStock: true, portionsSold: 110 },
+    { id: 'a2', name: 'Gỏi Ngó Sen Tôm Thịt', category: 'appetizers', price: 110000, imageUrl: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=600&q=80', inStock: false, portionsSold: 42 },
+    { id: 'a3', name: 'Chả Giò Chiên Giòn', category: 'appetizers', price: 85000, imageUrl: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=80', inStock: true, portionsSold: 76 },
+    { id: 'ds1', name: 'Chè Khúc Bạch', category: 'desserts', price: 55000, imageUrl: 'https://images.unsplash.com/photo-1516684732162-798a0062be99?auto=format&fit=crop&w=600&q=80', inStock: true, portionsSold: 58 },
+    { id: 'ds2', name: 'Bánh Flan Caramel', category: 'desserts', price: 45000, imageUrl: 'https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=600&q=80', inStock: true, portionsSold: 71 },
+    { id: 'ds3', name: 'Kem Dừa Thái', category: 'desserts', price: 60000, imageUrl: 'https://images.unsplash.com/photo-1499636136210-6f4ee915583e?auto=format&fit=crop&w=600&q=80', inStock: true, portionsSold: 39 },
+    { id: 'd1', name: 'Cà Phê Trứng Việt Nam', category: 'drinks', price: 45000, imageUrl: 'https://images.unsplash.com/photo-1517701604599-bb29b565090c?auto=format&fit=crop&w=600&q=80', inStock: true, portionsSold: 130 },
+    { id: 'd2', name: 'Trà Vải Đặc Biệt', category: 'drinks', price: 45000, imageUrl: 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&w=600&q=80', inStock: true, portionsSold: 115 },
+    { id: 'd3', name: 'Bia Tiger Tươi (Ly)', category: 'drinks', price: 35000, imageUrl: 'https://images.unsplash.com/photo-1608270586620-248524c67de9?auto=format&fit=crop&w=600&q=80', inStock: true, portionsSold: 180 },
+    { id: 'd4', name: 'Trà Đào Sả Lạnh', category: 'drinks', price: 40000, imageUrl: 'https://images.unsplash.com/photo-1497534446932-c925b458314e?auto=format&fit=crop&w=600&q=80', inStock: true, portionsSold: 54 }
   ])
 
   // 3. Mock Manager approvals overrides feed
@@ -88,19 +102,19 @@ export function AdminDashboard({ onBackToServerView }: AdminDashboardProps) {
     { id: 'L-5892', timestamp: '12:05 CH', action: 'Duyệt giảm giá 20% khách thân thiết cho Bàn B2', manager: 'Emma W. (QL)', severity: 'medium' },
     { id: 'L-5731', timestamp: '11:42 SA', action: 'Cho phép huỷ món Phở Bò Wagyu trên Phiếu #A4', manager: 'Emma W. (QL)', severity: 'high' },
     { id: 'L-5642', timestamp: '10:15 SA', action: 'Xử lý chênh lệch ngăn kéo tiền mặt (50.000 đ)', manager: 'John D. (Trưởng Ca)', severity: 'low' },
-    { id: 'L-5520', timestamp: '09:30 SA', action: 'Vượt giới hạn sức chứa để xếp 8 khách vào Phòng VIP 4', manager: 'Emma W. (QL)', severity: 'medium' },
+    { id: 'L-5520', timestamp: '09:30 SA', action: 'Vượt giới hạn sức chứa để xếp 8 khách vào Bàn 20', manager: 'Emma W. (QL)', severity: 'medium' },
     { id: 'L-5411', timestamp: '08:45 SA', action: 'Duyệt điều chỉnh giá khuyến mãi Bia Tiger cho Bàn A1', manager: 'John D. (Trưởng Ca)', severity: 'low' }
   ])
 
-  // 4. Staff Shifts database (read-only display data)
-  const staffList: StaffMember[] = [
-    { id: 'S-1', name: 'Alex Mercer', role: 'Quản lý', shift: 'Ca sáng (08:00 - 16:00)', status: 'Đang làm' },
-    { id: 'S-2', name: 'Emma Watson', role: 'Thu ngân', shift: 'Ca sáng (08:00 - 16:00)', status: 'Đang làm' },
-    { id: 'S-3', name: 'Nguyễn An', role: 'Bếp trưởng', shift: 'Cả ngày', status: 'Đang làm' },
-    { id: 'S-4', name: 'Trần Bình', role: 'Phục vụ', shift: 'Ca sáng (08:00 - 16:00)', status: 'Đang nghỉ giải lao' },
-    { id: 'S-5', name: 'Lê Chi', role: 'Phục vụ', shift: 'Ca tối (16:00 - 24:00)', status: 'Nghỉ' },
-    { id: 'S-6', name: 'Phạm Đan', role: 'Thu ngân', shift: 'Ca tối (16:00 - 24:00)', status: 'Nghỉ' }
-  ]
+  // 4. Staff management database
+  const [staffList, setStaffList] = useState<StaffMember[]>([
+    { id: 'S-1', name: 'Alex Mercer', role: 'Quản lý', shift: 'Ca sáng (08:00 - 16:00)', status: 'Đang làm', accountUsername: 'alex.mercer', accountPassword: 'Admin@123' },
+    { id: 'S-2', name: 'Emma Watson', role: 'Thu ngân', shift: 'Ca sáng (08:00 - 16:00)', status: 'Đang làm', accountUsername: 'emma.watson', accountPassword: 'Cashier@123' },
+    { id: 'S-3', name: 'Nguyễn An', role: 'Bếp trưởng', shift: 'Parttime', status: 'Đang làm', accountUsername: 'nguyen.an', accountPassword: 'Kitchen@123' },
+    { id: 'S-4', name: 'Trần Bình', role: 'Phục vụ', shift: 'Ca sáng (08:00 - 16:00)', status: 'Nghỉ', accountUsername: 'tran.binh', accountPassword: 'Waiter@123' },
+    { id: 'S-5', name: 'Lê Chi', role: 'Phục vụ', shift: 'Ca tối (16:00 - 24:00)', status: 'Nghỉ', accountUsername: 'le.chi', accountPassword: 'Waiter@456' },
+    { id: 'S-6', name: 'Phạm Đan', role: 'Thu ngân', shift: 'Parttime', status: 'Nghỉ', accountUsername: 'pham.dan', accountPassword: 'Cashier@456' }
+  ])
 
   // 5. Settled Invoices logs (read-only display data)
   const invoices: SettledInvoice[] = [
@@ -108,19 +122,61 @@ export function AdminDashboard({ onBackToServerView }: AdminDashboardProps) {
     { id: 'INV-9830', table: 'Bàn B2', subtotal: 940000, discount: 188000, tax: 60160, total: 812160, method: 'Card', timestamp: '12:05 CH' },
     { id: 'INV-9829', table: 'Bàn A1', subtotal: 425000, discount: 0, tax: 34000, total: 459000, method: 'Cash', timestamp: '11:32 SA' },
     { id: 'INV-9828', table: 'Bàn A9', subtotal: 1200000, discount: 120000, tax: 86400, total: 1166400, method: 'VietQR', timestamp: '10:50 SA' },
-    { id: 'INV-9827', table: 'Phòng VIP 2', subtotal: 3100000, discount: 465000, tax: 210800, total: 2845800, method: 'Card', timestamp: '10:15 SA' }
+    { id: 'INV-9827', table: 'Bàn 20', subtotal: 3100000, discount: 465000, tax: 210800, total: 2845800, method: 'Card', timestamp: '10:15 SA' }
   ]
 
   // Local state UI controls
   const [inventorySearch, setInventorySearch] = useState<string>('')
-  const [inventoryFilter, setInventoryFilter] = useState<'all' | 'mains' | 'appetizers' | 'drinks'>('all')
+  const [inventoryFilter, setInventoryFilter] = useState<'all' | 'mains' | 'appetizers' | 'desserts' | 'drinks'>('all')
   const [newOverrideAction, setNewOverrideAction] = useState<string>('')
   
   // Custom dialogs
   const [isNewDishOpen, setIsNewDishOpen] = useState(false)
+  const [editingDishId, setEditingDishId] = useState<string | null>(null)
   const [newDishName, setNewDishName] = useState('')
-  const [newDishCategory, setNewDishCategory] = useState<'mains' | 'appetizers' | 'drinks'>('mains')
+  const [newDishCategory, setNewDishCategory] = useState<'mains' | 'appetizers' | 'desserts' | 'drinks'>('mains')
   const [newDishPrice, setNewDishPrice] = useState('')
+  const [newDishImageUrl, setNewDishImageUrl] = useState('')
+
+  const [isStaffFormOpen, setIsStaffFormOpen] = useState(false)
+  const [editingStaffId, setEditingStaffId] = useState<string | null>(null)
+  const [staffName, setStaffName] = useState('')
+  const [staffRole, setStaffRole] = useState<StaffMember['role']>('Phục vụ')
+  const [staffShift, setStaffShift] = useState<StaffMember['shift']>('Ca sáng (08:00 - 16:00)')
+  const [staffStatus, setStaffStatus] = useState<StaffMember['status']>('Đang làm')
+  const [staffUsername, setStaffUsername] = useState('')
+  const [staffPassword, setStaffPassword] = useState('')
+
+  const [tableLayout, setTableLayout] = useState<DiningTableConfig[]>([
+    { id: 'A1', name: 'Bàn A1', capacity: 4 },
+    { id: 'A2', name: 'Bàn A2', capacity: 4 },
+    { id: 'A3', name: 'Bàn A3', capacity: 4 },
+    { id: 'A4', name: 'Bàn A4', capacity: 4 },
+    { id: 'A5', name: 'Bàn A5', capacity: 4 },
+    { id: 'A6', name: 'Bàn A6', capacity: 4 },
+    { id: 'A7', name: 'Bàn A7', capacity: 4 },
+    { id: 'A8', name: 'Bàn A8', capacity: 4 },
+    { id: 'A9', name: 'Bàn A9', capacity: 4 },
+    { id: 'A10', name: 'Bàn A10', capacity: 4 },
+    { id: 'A11', name: 'Bàn A11', capacity: 4 },
+    { id: 'A12', name: 'Bàn A12', capacity: 4 },
+    { id: 'B1', name: 'Bàn B1', capacity: 6 },
+    { id: 'B2', name: 'Bàn B2', capacity: 6 },
+    { id: 'B3', name: 'Bàn B3', capacity: 6 },
+    { id: 'B4', name: 'Bàn B4', capacity: 6 },
+    { id: 'B5', name: 'Bàn B5', capacity: 6 },
+    { id: 'B6', name: 'Bàn B6', capacity: 6 },
+    { id: 'VIP1', name: 'Bàn VIP1', capacity: 10 },
+    { id: 'VIP2', name: 'Bàn VIP2', capacity: 10 },
+    { id: 'VIP3', name: 'Bàn VIP3', capacity: 10 },
+    { id: 'VIP4', name: 'Bàn VIP4', capacity: 10 }
+  ])
+
+  const [isTableFormOpen, setIsTableFormOpen] = useState(false)
+  const [editingTableId, setEditingTableId] = useState<string | null>(null)
+  const [tableCode, setTableCode] = useState('')
+  const [tableName, setTableName] = useState('')
+  const [tableCapacity, setTableCapacity] = useState('4')
 
   const [toast, setToast] = useState<{ text: string; type: 'success' | 'info' | 'error' } | null>(null)
 
@@ -150,11 +206,55 @@ export function AdminDashboard({ onBackToServerView }: AdminDashboardProps) {
     )
   }
 
-  // Add new item to database
-  const handleAddDish = () => {
+  const resetDishForm = () => {
+    setEditingDishId(null)
+    setNewDishName('')
+    setNewDishCategory('mains')
+    setNewDishPrice('')
+    setNewDishImageUrl('')
+  }
+
+  const openAddDishModal = () => {
+    resetDishForm()
+    setIsNewDishOpen(true)
+  }
+
+  const openEditDishModal = (dish: MenuItem) => {
+    setEditingDishId(dish.id)
+    setNewDishName(dish.name)
+    setNewDishCategory(dish.category)
+    setNewDishPrice(String(dish.price))
+    setNewDishImageUrl(dish.imageUrl || '')
+    setIsNewDishOpen(true)
+  }
+
+  // Add or update item in database
+  const handleSaveDish = () => {
     const price = parseFloat(newDishPrice)
     if (!newDishName.trim() || isNaN(price) || price <= 0) {
       showToast('Vui lòng nhập tên món và giá hợp lệ.', 'error')
+      return
+    }
+
+    const normalizedImageUrl = newDishImageUrl.trim() || undefined
+
+    if (editingDishId) {
+      setInventory((prev) =>
+        prev.map((item) =>
+          item.id === editingDishId
+            ? {
+                ...item,
+                name: newDishName,
+                category: newDishCategory,
+                price,
+                imageUrl: normalizedImageUrl
+              }
+            : item
+        )
+      )
+      setIsNewDishOpen(false)
+      showToast(`Đã cập nhật ${newDishName} thành công!`, 'success')
+      resetDishForm()
       return
     }
 
@@ -162,16 +262,190 @@ export function AdminDashboard({ onBackToServerView }: AdminDashboardProps) {
       id: `m-${Math.floor(Math.random() * 9000 + 1000)}`,
       name: newDishName,
       category: newDishCategory,
-      price: price,
+      price,
+      imageUrl: normalizedImageUrl,
       inStock: true,
       portionsSold: 0
     }
 
     setInventory((prev) => [...prev, newDish])
     setIsNewDishOpen(false)
-    setNewDishName('')
-    setNewDishPrice('')
     showToast(`Đã thêm ${newDishName} vào danh mục ${newDishCategory} thành công!`, 'success')
+    resetDishForm()
+  }
+
+  const handleDeleteDish = (dishId: string) => {
+    const dish = inventory.find((item) => item.id === dishId)
+    if (!dish) return
+
+    setInventory((prev) => prev.filter((item) => item.id !== dishId))
+    if (editingDishId === dishId) {
+      setIsNewDishOpen(false)
+      resetDishForm()
+    }
+    showToast(`Đã xoá ${dish.name} khỏi thực đơn.`, 'info')
+  }
+
+  const resetStaffForm = () => {
+    setEditingStaffId(null)
+    setStaffName('')
+    setStaffRole('Phục vụ')
+    setStaffShift('Ca sáng (08:00 - 16:00)')
+    setStaffStatus('Đang làm')
+    setStaffUsername('')
+    setStaffPassword('')
+  }
+
+  const openAddStaffModal = () => {
+    resetStaffForm()
+    setIsStaffFormOpen(true)
+  }
+
+  const openEditStaffModal = (staff: StaffMember) => {
+    setEditingStaffId(staff.id)
+    setStaffName(staff.name)
+    setStaffRole(staff.role)
+    setStaffShift(staff.shift)
+    setStaffStatus(staff.status)
+    setStaffUsername(staff.accountUsername)
+    setStaffPassword(staff.accountPassword)
+    setIsStaffFormOpen(true)
+  }
+
+  const handleSaveStaff = () => {
+    if (!staffName.trim() || !staffUsername.trim() || !staffPassword.trim()) {
+      showToast('Vui lòng nhập đầy đủ tên, tài khoản và mật khẩu.', 'error')
+      return
+    }
+
+    if (editingStaffId) {
+      setStaffList((prev) =>
+        prev.map((staff) =>
+          staff.id === editingStaffId
+            ? {
+                ...staff,
+                name: staffName,
+                role: staffRole,
+                shift: staffShift,
+                status: staffStatus,
+                accountUsername: staffUsername,
+                accountPassword: staffPassword
+              }
+            : staff
+        )
+      )
+      showToast(`Đã cập nhật thông tin nhân viên ${staffName}.`, 'success')
+      setIsStaffFormOpen(false)
+      resetStaffForm()
+      return
+    }
+
+    const newStaff: StaffMember = {
+      id: `S-${Math.floor(Math.random() * 9000 + 1000)}`,
+      name: staffName,
+      role: staffRole,
+      shift: staffShift,
+      status: staffStatus,
+      accountUsername: staffUsername,
+      accountPassword: staffPassword
+    }
+
+    setStaffList((prev) => [...prev, newStaff])
+    showToast(`Đã tạo tài khoản cho nhân viên ${staffName}.`, 'success')
+    setIsStaffFormOpen(false)
+    resetStaffForm()
+  }
+
+  const handleDeleteStaff = (staffId: string) => {
+    const staff = staffList.find((item) => item.id === staffId)
+    if (!staff) return
+
+    setStaffList((prev) => prev.filter((item) => item.id !== staffId))
+    if (editingStaffId === staffId) {
+      setIsStaffFormOpen(false)
+      resetStaffForm()
+    }
+    showToast(`Đã xoá nhân viên ${staff.name}.`, 'info')
+  }
+
+  const resetTableForm = () => {
+    setEditingTableId(null)
+    setTableCode('')
+    setTableName('')
+    setTableCapacity('4')
+  }
+
+  const openAddTableModal = () => {
+    resetTableForm()
+    setIsTableFormOpen(true)
+  }
+
+  const openEditTableModal = (table: DiningTableConfig) => {
+    setEditingTableId(table.id)
+    setTableCode(table.id)
+    setTableName(table.name)
+    setTableCapacity(String(table.capacity))
+    setIsTableFormOpen(true)
+  }
+
+  const handleSaveTable = () => {
+    const parsedCapacity = parseInt(tableCapacity, 10)
+    const normalizedCode = tableCode.trim().toUpperCase()
+    const normalizedName = tableName.trim() || (normalizedCode ? `Bàn ${normalizedCode}` : '')
+
+    if (!normalizedCode || !normalizedName || isNaN(parsedCapacity) || parsedCapacity < 1) {
+      showToast('Vui lòng nhập mã bàn, tên bàn và sức chứa hợp lệ.', 'error')
+      return
+    }
+
+    const duplicateTable = tableLayout.some((table) => table.id === normalizedCode && table.id !== editingTableId)
+    if (duplicateTable) {
+      showToast('Mã bàn đã tồn tại, vui lòng chọn mã khác.', 'error')
+      return
+    }
+
+    if (editingTableId) {
+      setTableLayout((prev) =>
+        prev.map((table) =>
+          table.id === editingTableId
+            ? {
+                ...table,
+                id: normalizedCode,
+                name: normalizedName,
+                capacity: parsedCapacity
+              }
+            : table
+        )
+      )
+      showToast(`Đã cập nhật ${normalizedName}.`, 'success')
+      setIsTableFormOpen(false)
+      resetTableForm()
+      return
+    }
+
+    setTableLayout((prev) => [
+      ...prev,
+      {
+        id: normalizedCode,
+        name: normalizedName,
+        capacity: parsedCapacity
+      }
+    ])
+    showToast(`Đã thêm ${normalizedName} vào sơ đồ bàn ăn.`, 'success')
+    setIsTableFormOpen(false)
+    resetTableForm()
+  }
+
+  const handleDeleteTable = (tableId: string) => {
+    const table = tableLayout.find((item) => item.id === tableId)
+    if (!table) return
+
+    setTableLayout((prev) => prev.filter((item) => item.id !== tableId))
+    if (editingTableId === tableId) {
+      setIsTableFormOpen(false)
+      resetTableForm()
+    }
+    showToast(`Đã xoá ${table.name} khỏi sơ đồ bàn ăn.`, 'info')
   }
 
   // Record manual manager approval log override
@@ -194,7 +468,7 @@ export function AdminDashboard({ onBackToServerView }: AdminDashboardProps) {
 
   // Section calculations
   const totalRevenue = invoices.reduce((sum, inv) => sum + inv.total, 0)
-  const activeTablesCount = '18/20'
+  const activeTablesCount = `${tableLayout.length} bàn`
 
   // Filtered menu inventory
   const filteredInventory = inventory.filter((item) => {
@@ -339,11 +613,11 @@ export function AdminDashboard({ onBackToServerView }: AdminDashboardProps) {
                 {/* Analytics 2: Occupied Tables */}
                 <div className="bg-white border border-[#E2D9C8] p-5 rounded-2xl flex items-center justify-between shadow-premium hover:-translate-y-0.5 transition-all">
                   <div className="text-left">
-                    <p className="text-[10px] text-gray-400 font-extrabold uppercase tracking-wider">Bàn đang hoạt động</p>
+                    <p className="text-[10px] text-gray-400 font-extrabold uppercase tracking-wider">Tổng số bàn</p>
                     <h3 className="text-2xl font-bold text-gray-800 font-mono mt-1">{activeTablesCount}</h3>
                     <span className="text-[10px] text-gray-500 font-bold flex items-center gap-1 mt-1">
                       <Users className="w-3.5 h-3.5 text-gray-400" />
-                      <span>90.0% công suất phòng</span>
+                      <span>Gồm toàn bộ bàn đã cấu hình</span>
                     </span>
                   </div>
                   <div className="h-10 w-10 bg-primary/10 rounded-xl flex items-center justify-center">
@@ -584,6 +858,7 @@ export function AdminDashboard({ onBackToServerView }: AdminDashboardProps) {
                       { id: 'all', label: 'Tất cả' },
                       { id: 'mains', label: 'Món chính' },
                       { id: 'appetizers', label: 'Khai vị' },
+                      { id: 'desserts', label: 'Tráng miệng' },
                       { id: 'drinks', label: 'Đồ uống' }
                     ] as const).map((tab) => (
                       <button
@@ -602,8 +877,8 @@ export function AdminDashboard({ onBackToServerView }: AdminDashboardProps) {
                 </div>
 
                 {/* Add Item trigger */}
-                <button
-                  onClick={() => setIsNewDishOpen(true)}
+                  <button
+                    onClick={openAddDishModal}
                   className="px-4 py-2 bg-primary hover:bg-[#A93226] text-white text-xs font-bold rounded-xl active-press transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm shadow-primary/25"
                 >
                   <Plus className="w-4 h-4 text-white" />
@@ -621,6 +896,7 @@ export function AdminDashboard({ onBackToServerView }: AdminDashboardProps) {
                       <th className="py-3 text-right">Đã bán</th>
                       <th className="py-3 text-right">Đơn giá</th>
                       <th className="py-3 text-center w-36">Trạng thái kho</th>
+                      <th className="py-3 text-center w-28">Thao tác</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">
@@ -633,9 +909,18 @@ export function AdminDashboard({ onBackToServerView }: AdminDashboardProps) {
                       >
                         <td className="py-4 font-bold text-gray-800 text-sm">
                           <div className="flex items-center gap-2.5">
-                            <div className="h-8 w-8 rounded-lg bg-primary/5 border border-primary/10 flex items-center justify-center text-primary font-mono text-[10px] font-extrabold">
-                              {item.id.toUpperCase()}
-                            </div>
+                            {item.imageUrl ? (
+                              <img
+                                src={item.imageUrl}
+                                alt={item.name}
+                                className="h-10 w-10 rounded-lg object-cover border border-primary/10"
+                                loading="lazy"
+                              />
+                            ) : (
+                              <div className="h-10 w-10 rounded-lg bg-primary/5 border border-primary/10 flex items-center justify-center text-primary font-mono text-[10px] font-extrabold">
+                                {item.id.toUpperCase()}
+                              </div>
+                            )}
                             <div className="text-left">
                               <span className="font-bold text-gray-800 block leading-tight">{item.name}</span>
                               <span className="text-[9px] font-mono text-gray-400 font-bold uppercase tracking-wider mt-0.5">ID: #{item.id}</span>
@@ -648,9 +933,17 @@ export function AdminDashboard({ onBackToServerView }: AdminDashboardProps) {
                               ? 'bg-status-dining-bg text-status-dining-text border-[#E6B0AA]' 
                               : item.category === 'appetizers'
                               ? 'bg-status-waiting-bg text-status-waiting-text border-[#F7DC6F]'
+                              : item.category === 'desserts'
+                              ? 'bg-amber-50 text-amber-800 border-amber-200'
                               : 'bg-indigo-50 text-indigo-800 border-indigo-200'
                           }`}>
-                            {item.category}
+                            {item.category === 'mains'
+                              ? 'Món chính'
+                              : item.category === 'appetizers'
+                              ? 'Khai vị'
+                              : item.category === 'desserts'
+                              ? 'Tráng miệng'
+                              : 'Đồ uống'}
                           </span>
                         </td>
                         <td className="py-4 text-right font-mono font-bold text-gray-600 text-sm">
@@ -680,6 +973,24 @@ export function AdminDashboard({ onBackToServerView }: AdminDashboardProps) {
                             </button>
                           </div>
                         </td>
+                        <td className="py-4">
+                          <div className="flex items-center justify-center gap-2">
+                            <button
+                              onClick={() => openEditDishModal(item)}
+                              className="h-8 w-8 rounded-lg border border-[#E2D9C8] bg-white text-gray-700 hover:border-primary hover:text-primary transition-all flex items-center justify-center"
+                              title="Sửa món"
+                            >
+                              <Pencil className="w-3.5 h-3.5" />
+                            </button>
+                            <button
+                              onClick={() => handleDeleteDish(item.id)}
+                              className="h-8 w-8 rounded-lg border border-[#F5B7B1] bg-white text-primary hover:bg-primary hover:text-white transition-all flex items-center justify-center"
+                              title="Xoá món"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -691,46 +1002,60 @@ export function AdminDashboard({ onBackToServerView }: AdminDashboardProps) {
           {/* ================= VIEW 3: TABLES LAYOUT OVERVIEW ================= */}
           {activeTab === 'tables' && (
             <div className="bg-white border border-[#E2D9C8] p-6 rounded-2xl shadow-sm text-left">
-              <h3 className="font-extrabold text-lg text-gray-800 font-serif">Sơ đồ bàn ăn toàn nhà hàng</h3>
-              <p className="text-xs text-gray-500 mt-1 mb-6">
-                Cấu hình lưới phòng ăn vật lý, giới hạn sức chứa và mã định tuyến bàn POS.
-              </p>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+                <div>
+                  <h3 className="font-extrabold text-lg text-gray-800 font-serif">Sơ đồ bàn ăn toàn nhà hàng</h3>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Admin có thể thêm, sửa, xoá số bàn và sức chứa.
+                  </p>
+                </div>
+                <button
+                  onClick={() => openAddTableModal()}
+                  className="px-4 py-2 bg-primary hover:bg-[#A93226] text-white text-xs font-bold rounded-xl active-press transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm shadow-primary/25"
+                >
+                  <Plus className="w-4 h-4 text-white" />
+                  <span>Thêm bàn mới</span>
+                </button>
+              </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="border border-dashed border-gray-200 rounded-2xl p-6 bg-[#FAF6EE]/50">
-                  <h4 className="text-xs font-bold text-gray-700 uppercase mb-3">Tầng 1 (Khu A)</h4>
-                  <div className="grid grid-cols-3 gap-2">
-                    {Array.from({ length: 12 }).map((_, i) => (
-                      <div key={i} className="bg-white border border-gray-200 rounded-xl p-3 text-center shadow-xs">
-                        <span className="text-xs font-bold font-serif text-gray-800">A{i+1}</span>
-                        <span className="block text-[8px] text-gray-400 font-mono font-bold mt-1">SỨC CHỨA: 4</span>
-                      </div>
-                    ))}
+              <div className="border border-dashed border-gray-200 rounded-2xl p-4 bg-[#FAF6EE]/50">
+                <div className="flex items-center justify-between gap-3 mb-3">
+                  <div>
+                    <h4 className="text-xs font-bold text-gray-700 uppercase">Danh sách bàn</h4>
+                    <p className="text-[10px] text-gray-400 font-medium mt-0.5">{tableLayout.length} bàn trong sơ đồ</p>
                   </div>
                 </div>
 
-                <div className="border border-dashed border-gray-200 rounded-2xl p-6 bg-[#FAF6EE]/50">
-                  <h4 className="text-xs font-bold text-gray-700 uppercase mb-3">Tầng 2 (Khu B)</h4>
-                  <div className="grid grid-cols-3 gap-2">
-                    {Array.from({ length: 6 }).map((_, i) => (
-                      <div key={i} className="bg-white border border-gray-200 rounded-xl p-3 text-center shadow-xs">
-                        <span className="text-xs font-bold font-serif text-gray-800">B{i+1}</span>
-                        <span className="block text-[8px] text-gray-400 font-mono font-bold mt-1">SỨC CHỨA: 6</span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
+                  {tableLayout.map((table) => (
+                    <div key={table.id} className="bg-white border border-gray-200 rounded-xl p-3 shadow-xs">
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
+                          <span className="text-xs font-bold font-serif text-gray-800 block">{table.name}</span>
+                          <span className="block text-[8px] text-gray-400 font-mono font-bold mt-1">{table.id}</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <button
+                            onClick={() => openEditTableModal(table)}
+                            className="h-7 w-7 rounded-md border border-[#E2D9C8] bg-white text-gray-700 hover:border-primary hover:text-primary transition-all flex items-center justify-center"
+                            title="Sửa bàn"
+                          >
+                            <Pencil className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteTable(table.id)}
+                            className="h-7 w-7 rounded-md border border-[#F5B7B1] bg-white text-primary hover:bg-primary hover:text-white transition-all flex items-center justify-center"
+                            title="Xoá bàn"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
                       </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="border border-dashed border-gray-200 rounded-2xl p-6 bg-[#FAF6EE]/50">
-                  <h4 className="text-xs font-bold text-gray-700 uppercase mb-3">Phòng VIP</h4>
-                  <div className="grid grid-cols-2 gap-2">
-                    {Array.from({ length: 4 }).map((_, i) => (
-                      <div key={i} className="bg-white border border-gray-200 rounded-xl p-3 text-center shadow-xs">
-                        <span className="text-xs font-bold font-serif text-gray-800">VIP {i+1}</span>
-                        <span className="block text-[8px] text-[#B7950B] font-mono font-bold mt-1">SỨC CHỨA: 10</span>
-                      </div>
-                    ))}
-                  </div>
+                      <span className="block text-[8px] text-gray-400 font-mono font-bold mt-2">
+                        SỨC CHỨA: {table.capacity}
+                      </span>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
@@ -739,17 +1064,30 @@ export function AdminDashboard({ onBackToServerView }: AdminDashboardProps) {
           {/* ================= VIEW 4: STAFF MANAGEMENT ================= */}
           {activeTab === 'staff' && (
             <div className="bg-white border border-[#E2D9C8] p-6 rounded-2xl shadow-sm text-left">
-              <h3 className="font-extrabold text-lg text-gray-800 font-serif mb-1">Lịch làm việc & Phân quyền nhân viên</h3>
-              <p className="text-xs text-gray-500 mb-6">Phân công nhiệm vụ, theo dõi ca trực và vị trí làm việc của từng nhân viên.</p>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+                <div>
+                  <h3 className="font-extrabold text-lg text-gray-800 font-serif mb-1">DANH SÁCH NHÂN VIÊN</h3>
+                  <p className="text-xs text-gray-500">Admin có thể thêm, sửa, xoá nhân viên, chức vụ và tài khoản đăng nhập.</p>
+                </div>
+                <button
+                  onClick={openAddStaffModal}
+                  className="px-4 py-2 bg-primary hover:bg-[#A93226] text-white text-xs font-bold rounded-xl active-press transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm shadow-primary/25"
+                >
+                  <Plus className="w-4 h-4 text-white" />
+                  <span>Thêm nhân viên</span>
+                </button>
+              </div>
 
               <div className="overflow-x-auto">
                 <table className="w-full text-xs text-left">
                   <thead>
                     <tr className="border-b border-gray-100 text-[10px] font-extrabold text-gray-400 uppercase tracking-wider pb-3">
                       <th className="py-3">Họ tên</th>
-                      <th className="py-3">Vị trí</th>
+                      <th className="py-3">Chức vụ</th>
                       <th className="py-3">Ca làm việc</th>
+                      <th className="py-3">Tài khoản</th>
                       <th className="py-3 text-center">Trạng thái</th>
+                      <th className="py-3 text-center w-28">Thao tác</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-50">
@@ -762,16 +1100,38 @@ export function AdminDashboard({ onBackToServerView }: AdminDashboardProps) {
                           </span>
                         </td>
                         <td className="py-3.5 font-medium text-gray-600">{st.shift}</td>
+                        <td className="py-3.5 text-gray-700">
+                          <div className="flex flex-col">
+                            <span className="font-mono font-bold text-[10px]">@{st.accountUsername}</span>
+                            <span className="text-[9px] text-gray-400">Mật khẩu: {st.accountPassword ? 'Đã tạo' : 'Chưa có'}</span>
+                          </div>
+                        </td>
                         <td className="py-3.5 text-center">
                           <span className={`text-[9px] font-extrabold px-2 py-1 rounded-lg border uppercase tracking-wider ${
-                            st.status === 'Đang làm' 
-                              ? 'bg-emerald-50 text-emerald-800 border-emerald-200' 
-                              : st.status === 'Đang nghỉ giải lao' 
-                              ? 'bg-amber-50 text-amber-800 border-amber-200 animate-pulse' 
+                            st.status === 'Đang làm'
+                              ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
                               : 'bg-gray-100 text-gray-700 border-gray-200'
                           }`}>
                             {st.status}
                           </span>
+                        </td>
+                        <td className="py-3.5">
+                          <div className="flex items-center justify-center gap-2">
+                            <button
+                              onClick={() => openEditStaffModal(st)}
+                              className="h-8 w-8 rounded-lg border border-[#E2D9C8] bg-white text-gray-700 hover:border-primary hover:text-primary transition-all flex items-center justify-center"
+                              title="Sửa nhân viên"
+                            >
+                              <Pencil className="w-3.5 h-3.5" />
+                            </button>
+                            <button
+                              onClick={() => handleDeleteStaff(st.id)}
+                              className="h-8 w-8 rounded-lg border border-[#F5B7B1] bg-white text-primary hover:bg-primary hover:text-white transition-all flex items-center justify-center"
+                              title="Xoá nhân viên"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     ))}
@@ -920,15 +1280,144 @@ export function AdminDashboard({ onBackToServerView }: AdminDashboardProps) {
         </div>
       </main>
 
+      {/* --- STAFF MANAGEMENT POPUP MODAL --- */}
+      {isStaffFormOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
+          <div className="absolute inset-0" onClick={() => { setIsStaffFormOpen(false); resetStaffForm() }}></div>
+          <div className="w-full max-w-md bg-white rounded-2xl border border-[#C0392B]/10 shadow-premium-lg p-6 z-10 animate-slide-up text-left max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-start mb-4">
+              <h3 className="font-extrabold text-lg text-gray-800 font-serif">
+                {editingStaffId ? 'Sửa nhân viên' : 'Thêm nhân viên mới'}
+              </h3>
+              <button
+                onClick={() => { setIsStaffFormOpen(false); resetStaffForm() }}
+                className="h-8 w-8 bg-gray-100 hover:bg-gray-200 text-gray-500 rounded-full flex items-center justify-center transition-all active-press"
+              >
+                <X className="w-4.5 h-4.5" />
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <div className="text-left">
+                <label className="block text-[10px] font-extrabold text-gray-400 uppercase tracking-widest mb-1.5">Họ tên</label>
+                <input
+                  type="text"
+                  value={staffName}
+                  onChange={(e) => setStaffName(e.target.value)}
+                  className="w-full bg-[#FAF6EE] text-sm px-4 py-2.5 rounded-xl border border-[#E2D9C8] focus:border-primary focus:outline-none"
+                  placeholder="VD: Nguyễn Văn A"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="text-left">
+                  <label className="block text-[10px] font-extrabold text-gray-400 uppercase tracking-widest mb-1.5">Chức vụ</label>
+                  <select
+                    value={staffRole}
+                    onChange={(e: any) => setStaffRole(e.target.value)}
+                    className="w-full bg-[#FAF6EE] text-sm px-4 py-2.5 rounded-xl border border-[#E2D9C8] focus:border-primary focus:outline-none"
+                  >
+                    <option value="Quản lý">Quản lý</option>
+                    <option value="Bếp trưởng">Bếp trưởng</option>
+                    <option value="Phục vụ">Phục vụ</option>
+                    <option value="Thu ngân">Thu ngân</option>
+                  </select>
+                </div>
+
+                <div className="text-left">
+                  <label className="block text-[10px] font-extrabold text-gray-400 uppercase tracking-widest mb-1.5">Ca làm việc</label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {([
+                      'Ca sáng (08:00 - 16:00)',
+                      'Ca tối (16:00 - 24:00)',
+                      'Parttime'
+                    ] as const).map((shiftOption) => (
+                      <button
+                        key={shiftOption}
+                        type="button"
+                        onClick={() => setStaffShift(shiftOption)}
+                        className={`min-h-[44px] rounded-xl border px-3 py-2 text-xs font-bold transition-all ${
+                          staffShift === shiftOption
+                            ? 'bg-primary text-white border-primary'
+                            : 'bg-[#FAF6EE] text-gray-700 border-[#E2D9C8] hover:border-primary'
+                        }`}
+                      >
+                        {shiftOption}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="text-left">
+                <label className="block text-[10px] font-extrabold text-gray-400 uppercase tracking-widest mb-1.5">Trạng thái</label>
+                <div className="grid grid-cols-2 gap-2">
+                  {(['Đang làm', 'Nghỉ'] as const).map((statusOption) => (
+                    <button
+                      key={statusOption}
+                      type="button"
+                      onClick={() => setStaffStatus(statusOption)}
+                      className={`min-h-[44px] rounded-xl border px-3 py-2 text-xs font-bold transition-all ${
+                        staffStatus === statusOption
+                          ? statusOption === 'Đang làm'
+                            ? 'bg-emerald-600 text-white border-emerald-600'
+                            : 'bg-gray-800 text-white border-gray-800'
+                          : 'bg-[#FAF6EE] text-gray-700 border-[#E2D9C8] hover:border-primary'
+                      }`}
+                    >
+                      {statusOption}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="text-left">
+                <label className="block text-[10px] font-extrabold text-gray-400 uppercase tracking-widest mb-1.5">Tài khoản đăng nhập</label>
+                <input
+                  type="text"
+                  value={staffUsername}
+                  onChange={(e) => setStaffUsername(e.target.value)}
+                  className="w-full bg-[#FAF6EE] text-sm px-4 py-2.5 rounded-xl border border-[#E2D9C8] focus:border-primary focus:outline-none"
+                  placeholder="VD: nguyen.vana"
+                />
+              </div>
+
+              <div className="text-left">
+                <label className="block text-[10px] font-extrabold text-gray-400 uppercase tracking-widest mb-1.5">Mật khẩu tài khoản</label>
+                <input
+                  type="text"
+                  value={staffPassword}
+                  onChange={(e) => setStaffPassword(e.target.value)}
+                  className="w-full bg-[#FAF6EE] text-sm px-4 py-2.5 rounded-xl border border-[#E2D9C8] focus:border-primary focus:outline-none"
+                  placeholder="VD: Staff@123"
+                />
+              </div>
+
+              <button
+                onClick={handleSaveStaff}
+                className="w-full min-h-[44px] bg-primary hover:bg-[#A93226] text-white font-bold rounded-xl text-xs uppercase tracking-wide active-press"
+              >
+                {editingStaffId ? 'Lưu thay đổi' : 'Tạo tài khoản nhân viên'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* --- ADD NEW DISH POPUP MODAL --- */}
       {isNewDishOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
           <div className="absolute inset-0" onClick={() => setIsNewDishOpen(false)}></div>
           <div className="w-full max-w-sm bg-white rounded-2xl border border-[#C0392B]/10 shadow-premium-lg p-6 z-10 animate-slide-up text-left">
             <div className="flex justify-between items-start mb-4">
-              <h3 className="font-extrabold text-lg text-gray-800 font-serif">Thêm món ăn mới</h3>
+              <h3 className="font-extrabold text-lg text-gray-800 font-serif">
+                {editingDishId ? 'Sửa món ăn' : 'Thêm món ăn mới'}
+              </h3>
               <button
-                onClick={() => setIsNewDishOpen(false)}
+                onClick={() => {
+                  setIsNewDishOpen(false)
+                  resetDishForm()
+                }}
                 className="h-8 w-8 bg-gray-100 hover:bg-gray-200 text-gray-500 rounded-full flex items-center justify-center transition-all active-press"
               >
                 <X className="w-4.5 h-4.5" />
@@ -961,7 +1450,8 @@ export function AdminDashboard({ onBackToServerView }: AdminDashboardProps) {
                   className="w-full bg-[#FAF6EE] text-sm px-4 py-2.5 rounded-xl border border-[#E2D9C8] focus:border-primary focus:outline-none"
                 >
                   <option value="mains">Món chính</option>
-                  <option value="appetizers">Món khai vị</option>
+                  <option value="appetizers">Khai vị</option>
+                  <option value="desserts">Tráng miệng</option>
                   <option value="drinks">Đồ uống</option>
                 </select>
               </div>
@@ -980,11 +1470,97 @@ export function AdminDashboard({ onBackToServerView }: AdminDashboardProps) {
                 />
               </div>
 
+              {/* Image URL */}
+              <div className="text-left">
+                <label className="block text-[10px] font-extrabold text-gray-400 uppercase tracking-widest mb-1.5">
+                  URL hinh anh mon
+                </label>
+                <input
+                  type="url"
+                  placeholder="https://..."
+                  value={newDishImageUrl}
+                  onChange={(e) => setNewDishImageUrl(e.target.value)}
+                  className="w-full bg-[#FAF6EE] text-sm px-4 py-2.5 rounded-xl border border-[#E2D9C8] focus:border-primary focus:outline-none"
+                />
+                {newDishImageUrl.trim() && (
+                  <img
+                    src={newDishImageUrl}
+                    alt={newDishName || 'Mon moi'}
+                    className="mt-3 h-28 w-full rounded-xl object-cover border border-[#E2D9C8]"
+                  />
+                )}
+              </div>
+
               <button
-                onClick={handleAddDish}
+                onClick={handleSaveDish}
                 className="w-full min-h-[44px] bg-primary hover:bg-[#A93226] text-white font-bold rounded-xl text-xs uppercase tracking-wide active-press"
               >
-                Thêm món vào thực đơn
+                {editingDishId ? 'Lưu thay đổi' : 'Thêm món vào thực đơn'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* --- TABLE LAYOUT POPUP MODAL --- */}
+      {isTableFormOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
+          <div className="absolute inset-0" onClick={() => { setIsTableFormOpen(false); resetTableForm() }}></div>
+          <div className="w-full max-w-sm bg-white rounded-2xl border border-[#C0392B]/10 shadow-premium-lg p-6 z-10 animate-slide-up text-left">
+            <div className="flex justify-between items-start mb-4">
+              <h3 className="font-extrabold text-lg text-gray-800 font-serif">
+                {editingTableId ? 'Sửa bàn ăn' : 'Thêm bàn ăn mới'}
+              </h3>
+              <button
+                onClick={() => { setIsTableFormOpen(false); resetTableForm() }}
+                className="h-8 w-8 bg-gray-100 hover:bg-gray-200 text-gray-500 rounded-full flex items-center justify-center transition-all active-press"
+              >
+                <X className="w-4.5 h-4.5" />
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <div className="text-left">
+                <label className="block text-[10px] font-extrabold text-gray-400 uppercase tracking-widest mb-1.5">Mã bàn</label>
+                <input
+                  type="text"
+                  value={tableCode}
+                  onChange={(e) => setTableCode(e.target.value)}
+                  className="w-full bg-[#FAF6EE] text-sm px-4 py-2.5 rounded-xl border border-[#E2D9C8] focus:border-primary focus:outline-none uppercase"
+                  placeholder="VD: A13 hoặc B20"
+                />
+              </div>
+
+              <div className="text-left">
+                <label className="block text-[10px] font-extrabold text-gray-400 uppercase tracking-widest mb-1.5">Tên hiển thị</label>
+                <input
+                  type="text"
+                  value={tableName}
+                  onChange={(e) => setTableName(e.target.value)}
+                  className="w-full bg-[#FAF6EE] text-sm px-4 py-2.5 rounded-xl border border-[#E2D9C8] focus:border-primary focus:outline-none"
+                  placeholder="VD: Bàn A13"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="text-left">
+                  <label className="block text-[10px] font-extrabold text-gray-400 uppercase tracking-widest mb-1.5">Sức chứa</label>
+                  <input
+                    type="number"
+                    min={1}
+                    value={tableCapacity}
+                    onChange={(e) => setTableCapacity(e.target.value)}
+                    className="w-full bg-[#FAF6EE] text-sm px-4 py-2.5 rounded-xl border border-[#E2D9C8] focus:border-primary focus:outline-none"
+                    placeholder="4"
+                  />
+                </div>
+              </div>
+
+              <button
+                onClick={handleSaveTable}
+                className="w-full min-h-[44px] bg-primary hover:bg-[#A93226] text-white font-bold rounded-xl text-xs uppercase tracking-wide active-press"
+              >
+                {editingTableId ? 'Lưu thay đổi' : 'Thêm bàn vào sơ đồ'}
               </button>
             </div>
           </div>

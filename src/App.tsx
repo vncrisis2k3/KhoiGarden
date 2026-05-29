@@ -30,6 +30,7 @@ interface OrderItem {
   price: number
   quantity: number
   category: 'mains' | 'appetizers' | 'drinks'
+  imageUrl?: string
   status?: 'pending' | 'cooking' | 'served'
 }
 
@@ -59,19 +60,22 @@ const formatPrice = (value: number) => {
 
 // Initial Menu Items for the Add Item panel
 const MENU_DATABASE: Omit<OrderItem, 'quantity'>[] = [
-  { id: 'm1', name: 'Phở Bò Wagyu', price: 150000, category: 'mains' },
-  { id: 'm2', name: 'Bún Chả Hà Nội', price: 95000, category: 'mains' },
-  { id: 'm3', name: 'Mực Nướng Hạ Long', price: 185000, category: 'mains' },
-  { id: 'm4', name: 'Cua Rang Trứng Muối', price: 320000, category: 'mains' },
-  { id: 'm5', name: 'Thịt Kho Tàu Nồi Đất Khói', price: 165000, category: 'mains' },
-  { id: 'a1', name: 'Gỏi Cuốn Tươi (3 cuốn)', price: 65000, category: 'appetizers' },
-  { id: 'a2', name: 'Gỏi Ngó Sen Tôm Thịt', price: 110000, category: 'appetizers' },
-  { id: 'a3', name: 'Nem Rán Giòn Cung Đình', price: 85000, category: 'appetizers' },
-  { id: 'd1', name: 'Cà Phê Trứng Việt Nam', price: 45000, category: 'drinks' },
-  { id: 'd2', name: 'Trà Vải Đặc Biệt', price: 45000, category: 'drinks' },
-  { id: 'd3', name: 'Bia Tiger Tươi (Ly)', price: 35000, category: 'drinks' },
-  { id: 'd4', name: 'Trà Đào Sả Lạnh', price: 40000, category: 'drinks' }
+  { id: 'm1', name: 'Phở Bò Wagyu', price: 150000, category: 'mains', imageUrl: 'https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?auto=format&fit=crop&w=600&q=80' },
+  { id: 'm2', name: 'Bún Chả Hà Nội', price: 95000, category: 'mains', imageUrl: 'https://images.unsplash.com/photo-1569058242253-92a9c755a0ec?auto=format&fit=crop&w=600&q=80' },
+  { id: 'm3', name: 'Mực Nướng Hạ Long', price: 185000, category: 'mains', imageUrl: 'https://images.unsplash.com/photo-1559737558-2f5a35f4523b?auto=format&fit=crop&w=600&q=80' },
+  { id: 'm4', name: 'Cua Rang Trứng Muối', price: 320000, category: 'mains', imageUrl: 'https://images.unsplash.com/photo-1559737558-2f5a35f4523b?auto=format&fit=crop&w=600&q=80' },
+  { id: 'm5', name: 'Thịt Kho Tàu Nồi Đất Khói', price: 165000, category: 'mains', imageUrl: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80' },
+  { id: 'a1', name: 'Gỏi Cuốn Tươi (3 cuốn)', price: 65000, category: 'appetizers', imageUrl: 'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=600&q=80' },
+  { id: 'a2', name: 'Gỏi Ngó Sen Tôm Thịt', price: 110000, category: 'appetizers', imageUrl: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=600&q=80' },
+  { id: 'a3', name: 'Nem Rán Giòn Cung Đình', price: 85000, category: 'appetizers', imageUrl: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=80' },
+  { id: 'd1', name: 'Cà Phê Trứng Việt Nam', price: 45000, category: 'drinks', imageUrl: 'https://images.unsplash.com/photo-1517701604599-bb29b565090c?auto=format&fit=crop&w=600&q=80' },
+  { id: 'd2', name: 'Trà Vải Đặc Biệt', price: 45000, category: 'drinks', imageUrl: 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&w=600&q=80' },
+  { id: 'd3', name: 'Bia Tiger Tươi (Ly)', price: 35000, category: 'drinks', imageUrl: 'https://images.unsplash.com/photo-1608270586620-248524c67de9?auto=format&fit=crop&w=600&q=80' },
+  { id: 'd4', name: 'Trà Đào Sả Lạnh', price: 40000, category: 'drinks', imageUrl: 'https://images.unsplash.com/photo-1497534446932-c925b458314e?auto=format&fit=crop&w=600&q=80' }
 ]
+
+const getDishImage = (item: Pick<OrderItem, 'id' | 'imageUrl'>) =>
+  item.imageUrl || MENU_DATABASE.find((menuItem) => menuItem.id === item.id)?.imageUrl
 
 function App() {
   // App States
@@ -213,7 +217,7 @@ function App() {
     // Phòng VIP (VIP1 đến VIP4)
     {
       id: 'VIP1',
-      name: 'Phòng VIP 1',
+      name: 'Bàn VIP1',
       section: 'vip',
       status: 'DINING',
       duration: 125,
@@ -226,10 +230,10 @@ function App() {
         { id: 'd3', name: 'Bia Tiger Tươi (Ly)', price: 35000, quantity: 12, category: 'drinks' }
       ]
     },
-    { id: 'VIP2', name: 'Phòng VIP 2', section: 'vip', status: 'EMPTY', duration: 0, guests: 0, assistanceRequested: false, orders: [] },
+    { id: 'VIP2', name: 'Bàn VIP2', section: 'vip', status: 'EMPTY', duration: 0, guests: 0, assistanceRequested: false, orders: [] },
     {
       id: 'VIP3',
-      name: 'Phòng VIP 3',
+      name: 'Bàn VIP3',
       section: 'vip',
       status: 'WAITING_FOOD',
       duration: 18,
@@ -241,11 +245,11 @@ function App() {
         { id: 'd2', name: 'Trà Vải Đặc Biệt', price: 45000, quantity: 6, category: 'drinks' }
       ]
     },
-    { id: 'VIP4', name: 'Phòng VIP 4', section: 'vip', status: 'EMPTY', duration: 0, guests: 0, assistanceRequested: false, orders: [] }
+    { id: 'VIP4', name: 'Bàn VIP4', section: 'vip', status: 'EMPTY', duration: 0, guests: 0, assistanceRequested: false, orders: [] }
   ])
 
   // UI Filtering and Searching
-  const [activeFilterTab, setActiveFilterTab] = useState<'all' | 'floor_1' | 'floor_2' | 'vip'>('all')
+  const [activeFilterTab, setActiveFilterTab] = useState<'all'>('all')
   const [statusFilter, setStatusFilter] = useState<'ALL' | 'EMPTY' | 'DINING' | 'WAITING_FOOD'>('ALL')
   const [searchQuery, setSearchQuery] = useState('')
   const [isSyncing, setIsSyncing] = useState(false)
@@ -254,6 +258,7 @@ function App() {
   // Modal / Bottom Sheet State
   const [selectedTable, setSelectedTable] = useState<Table | null>(null)
   const [modalMode, setModalMode] = useState<'main' | 'add_item' | 'transfer' | 'billing'>('main')
+  const [tableGuestCount, setTableGuestCount] = useState(2)
 
   // Transfer Table State
   const [targetTableId, setTargetTableId] = useState<string>('')
@@ -343,7 +348,7 @@ function App() {
 
   // Filter & Search Logic
   const filteredTables = tables.filter((table) => {
-    const matchesFilterTab = activeFilterTab === 'all' || table.section === activeFilterTab
+    const matchesFilterTab = activeFilterTab === 'all'
     const matchesStatus = statusFilter === 'ALL' || table.status === statusFilter
     const matchesSearch = table.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           table.id.toLowerCase().includes(searchQuery.toLowerCase())
@@ -400,6 +405,16 @@ function App() {
       )
     )
     showToast(`Trạng thái của ${tableId} đã chuyển thành ${newStatus}`, 'info')
+  }
+
+  const handleUpdateTableGuests = (tableId: string, delta: number) => {
+    setTables((prev) =>
+      prev.map((t) =>
+        t.id === tableId
+          ? { ...t, guests: Math.min(12, Math.max(1, t.guests + delta)) }
+          : t
+      )
+    )
   }
 
   // Action: Clear assistance alert
@@ -551,6 +566,7 @@ function App() {
     waiting: tables.filter((t) => t.status === 'WAITING_FOOD').length,
     empty: tables.filter((t) => t.status === 'EMPTY').length,
     assistance: tables.filter((t) => t.assistanceRequested).length
+    , totalGuests: tables.reduce((sum, t) => sum + (t.guests || 0), 0)
   }
 
   // Add Item - Filtering database of meals
@@ -611,6 +627,13 @@ function App() {
 
   return (
     <div className="min-h-screen bg-app-bg text-zinc-900 pb-24 relative selection:bg-primary selection:text-white antialiased flex flex-col font-sans">
+
+      {/* DEBUG PANEL - remove after troubleshooting */}
+      <div className="fixed bottom-4 left-4 z-50 bg-white border border-zinc-200 rounded-lg p-2 text-xs text-zinc-700 shadow-md">
+        <div>viewMode: <strong>{viewMode}</strong></div>
+        <div>tables: <strong>{tables.length}</strong></div>
+        <div>selectedTable: <strong>{selectedTable ? selectedTable.id : 'null'}</strong></div>
+      </div>
       
       {/* 1. Header component */}
       <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-zinc-200/60 shadow-xs py-4 px-4 sm:px-6">
@@ -623,7 +646,7 @@ function App() {
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-extrabold text-2xl tracking-tight text-primary font-serif">KHÓI</span>
+                <span className="font-extrabold text-2xl tracking-tight text-primary">KHÓI</span>
                 <span className="text-[10px] bg-primary/10 text-primary font-bold px-2 py-0.5 rounded-full uppercase tracking-widest font-mono">Phục vụ</span>
               </div>
               <p className="text-xs text-zinc-500 font-medium">Boutique Bistro Hub</p>
@@ -661,13 +684,6 @@ function App() {
                 title="Mở màn hình tự phục vụ cho khách hàng"
               >
                 <span>Khách gọi món</span>
-              </button>
-              <button
-                onClick={() => setViewMode('cashier')}
-                className="flex items-center gap-1 px-3 py-1.5 bg-primary hover:bg-primary-hover text-white text-[11px] font-bold rounded-xl uppercase transition-all active:scale-95 cursor-pointer shadow-xs"
-                title="Chuyển sang màn hình thu ngân POS"
-              >
-                <span>Thu ngân POS</span>
               </button>
               <button
                 onClick={() => setViewMode('admin')}
@@ -715,7 +731,7 @@ function App() {
         <section className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-3 mb-6">
           <div className="bg-white border border-zinc-200/80 p-3 sm:p-4 rounded-2xl flex items-center justify-between shadow-premium hover:-translate-y-0.5 transition-all">
             <div>
-              <p className="text-xs text-zinc-500 font-bold uppercase">Tất cả bàn</p>
+              <p className="text-xs text-black font-bold">TẤT CẢ BÀN</p>
               <h3 className="text-2xl font-bold text-zinc-850 mt-1">{stats.total}</h3>
             </div>
             <div className="h-9 w-9 bg-zinc-100 rounded-xl flex items-center justify-center">
@@ -800,46 +816,7 @@ function App() {
         {/* 2. Filter Tabs component */}
         <section className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-zinc-200/80 pb-4 mb-6 gap-4">
           <div className="flex items-center gap-2 overflow-x-auto no-scrollbar scroll-smooth">
-            <button
-              onClick={() => setActiveFilterTab('all')}
-              className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold tracking-wide transition-all uppercase whitespace-nowrap active:scale-95 ${
-                activeFilterTab === 'all'
-                  ? 'bg-primary text-white shadow-md shadow-primary/20'
-                  : 'bg-white text-zinc-600 border border-zinc-200 hover:border-primary/50'
-              }`}
-            >
-              Tất cả bàn
-            </button>
-            <button
-              onClick={() => setActiveFilterTab('floor_1')}
-              className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold tracking-wide transition-all uppercase whitespace-nowrap active:scale-95 ${
-                activeFilterTab === 'floor_1'
-                  ? 'bg-primary text-white shadow-md shadow-primary/20'
-                  : 'bg-white text-zinc-600 border border-zinc-200 hover:border-primary/50'
-              }`}
-            >
-              Tầng 1 (A)
-            </button>
-            <button
-              onClick={() => setActiveFilterTab('floor_2')}
-              className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold tracking-wide transition-all uppercase whitespace-nowrap active:scale-95 ${
-                activeFilterTab === 'floor_2'
-                  ? 'bg-primary text-white shadow-md shadow-primary/20'
-                  : 'bg-white text-zinc-600 border border-zinc-200 hover:border-primary/50'
-              }`}
-            >
-              Tầng 2 (B)
-            </button>
-            <button
-              onClick={() => setActiveFilterTab('vip')}
-              className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold tracking-wide transition-all uppercase whitespace-nowrap active:scale-95 ${
-                activeFilterTab === 'vip'
-                  ? 'bg-primary text-white shadow-md shadow-primary/20'
-                  : 'bg-white text-zinc-600 border border-zinc-200 hover:border-primary/50'
-              }`}
-            >
-              Phòng VIP
-            </button>
+            {/* filter button removed per request */}
           </div>
 
           {/* Desktop/Tablet Extra Filters */}
@@ -856,6 +833,12 @@ function App() {
               </span>
               Mô phỏng: {isSimulationActive ? 'BẬT' : 'TẮT'}
             </button>
+
+            {/* Small stat box aligned with Simulation - same size */}
+            <div className="text-xs px-3 py-2 rounded-xl font-bold border transition-all flex items-center gap-2 bg-zinc-100 border-zinc-300 text-zinc-500">
+              <Users className="w-4 h-4 text-zinc-600" />
+              <span className="text-black">Số khách: {stats.totalGuests}</span>
+            </div>
 
             {/* Status Pills */}
             <div className="bg-zinc-100/80 p-1 rounded-xl border border-zinc-200 flex items-center gap-1">
@@ -891,16 +874,16 @@ function App() {
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-1">
               {filteredTables.map((table) => {
                 
                 // Set status style properties according to specification
-                let cardStyle = 'bg-white border-orange-400 hover:border-orange-500'
+                let cardStyle = 'bg-white border-black hover:border-black'
                 let statusLabel = ''
                 let borderAnimation = ''
                 
                 let nameColor = 'text-black'
-                let guestBadgeStyle = 'bg-white border-orange-300 text-black'
+                let guestBadgeStyle = 'bg-white border-black text-black'
                 let midTextColor = 'text-black'
                 let timeColor = 'text-black'
                 
@@ -910,7 +893,7 @@ function App() {
                   statusLabel = 'ĐANG ĂN'
                 } else if (table.status === 'WAITING_FOOD') {
                   statusLabel = 'CHỜ MÓN'
-                  borderAnimation = 'border-orange-500'
+                  borderAnimation = 'border-black'
                 }
 
                 // Total order items tally count
@@ -921,9 +904,10 @@ function App() {
                     key={table.id}
                     onClick={() => {
                       setSelectedTable(table)
+                      setTableGuestCount(table.guests > 0 ? table.guests : 2)
                       setModalMode('main')
                     }}
-                    className={`border-2 rounded-2xl p-4 flex flex-col justify-between cursor-pointer transition-all hover:-translate-y-1 hover:shadow-premium-lg relative overflow-hidden select-none active:scale-95 duration-200 ${cardStyle} ${borderAnimation}`}
+                    className={`border-2 rounded-2xl p-5 min-h-[170px] flex flex-col justify-between cursor-pointer transition-all hover:-translate-y-1 hover:shadow-premium-lg relative overflow-hidden select-none active:scale-95 duration-200 ${cardStyle} ${borderAnimation}`}
                   >
                     {/* Active alarm ring overlay */}
                     {table.assistanceRequested && (
@@ -935,13 +919,13 @@ function App() {
 
                     {/* Table ID and Guest count row */}
                     <div className="flex justify-between items-start mt-2">
-                      <h3 className={`font-extrabold text-xl font-serif tracking-tight ${nameColor}`}>
+                      <h3 className={`font-extrabold text-xl tracking-tight ${nameColor}`}>
                         {table.name}
                       </h3>
                       {table.status !== 'EMPTY' && (
                         <div className={`flex items-center gap-1 backdrop-blur-xs px-2 py-0.5 rounded-lg border text-[10px] font-bold ${guestBadgeStyle}`}>
                           <Users className="w-3 h-3 opacity-70" />
-                          <span>{table.guests}p</span>
+                          <span>{table.guests}N</span>
                         </div>
                       )}
                     </div>
@@ -961,8 +945,8 @@ function App() {
                           {itemCount > 0 && (
                             <span className={`text-[10px] font-extrabold px-1.5 py-0.5 rounded-md mt-1 inline-block ${
                               table.status === 'DINING'
-                                ? 'bg-white text-black border border-orange-300'
-                                : 'bg-white text-black border border-orange-300'
+                                ? 'bg-white text-black border border-black'
+                                : 'bg-white text-black border border-black'
                             }`}>
                               {itemCount} món đã gọi
                             </span>
@@ -972,7 +956,7 @@ function App() {
                     </div>
 
                     {/* Lower segment: Time & Status tag */}
-                    <div className="flex items-center justify-between border-t border-orange-200 pt-3 mt-1">
+                    <div className="flex items-center justify-between border-t border-black pt-3 mt-1">
                       {/* Dining duration timer */}
                       {table.status !== 'EMPTY' ? (
                         <div className={`flex items-center gap-1 text-[11px] font-extrabold font-mono ${timeColor}`}>
@@ -990,10 +974,10 @@ function App() {
                       <span
                         className={`text-[9px] font-extrabold px-2 py-1 rounded-lg border uppercase tracking-wider ${
                           table.status === 'EMPTY'
-                            ? 'bg-white text-black border-orange-300'
+                            ? 'bg-white text-black border-black'
                             : table.status === 'DINING'
-                            ? 'bg-white text-black border-orange-300'
-                            : 'bg-white text-black border-orange-300'
+                            ? 'bg-white text-emerald-600 border-black'
+                            : 'bg-white text-amber-500 border-black'
                         }`}
                       >
                         {statusLabel}
@@ -1032,8 +1016,8 @@ function App() {
                   }`} />
                 </div>
                 <div className="text-left">
-                  <h3 className="font-extrabold text-xl text-zinc-800 font-serif">
-                    {selectedTable.name} <span className="text-xs text-zinc-450 font-sans">({selectedTable.section === 'floor_1' ? 'Tầng 1' : selectedTable.section === 'floor_2' ? 'Tầng 2' : 'Khu VIP'})</span>
+                  <h3 className="font-extrabold text-xl text-zinc-800">
+                    {selectedTable.name}
                   </h3>
                   <div className="flex items-center gap-2 mt-0.5">
                     {selectedTable.status !== 'EMPTY' && (
@@ -1073,19 +1057,30 @@ function App() {
                       {/* Set seating configuration */}
                       {selectedTable.status === 'EMPTY' ? (
                         <div className="bg-zinc-50 border border-zinc-200 rounded-2xl p-4 text-center">
-                          <p className="text-xs font-semibold text-zinc-600 mb-3">Sức chứa: 2 đến 6 khách</p>
-                          <div className="flex items-center justify-center gap-2">
-                            {[2, 3, 4, 6].map((num) => (
-                              <button
-                                key={num}
-                                onClick={() => handleOpenTable(selectedTable.id, num)}
-                                className="h-11 w-12 bg-white text-zinc-800 border border-zinc-200 font-bold rounded-xl hover:border-primary hover:text-primary transition-all active-press flex items-center justify-center gap-0.5 text-sm"
-                              >
-                                <span>{num}</span>
-                                <Users className="w-3 h-3 text-zinc-450" />
-                              </button>
-                            ))}
+                          <div className="flex items-center justify-center gap-3">
+                            <button
+                              onClick={() => setTableGuestCount((count) => Math.max(1, count - 1))}
+                              className="h-11 w-11 bg-white text-zinc-800 border border-zinc-200 font-extrabold rounded-xl hover:border-primary hover:text-primary transition-all active-press flex items-center justify-center text-lg"
+                            >
+                              -
+                            </button>
+                            <div className="h-11 min-w-20 bg-white border border-zinc-200 rounded-xl flex items-center justify-center gap-1 font-bold font-mono text-zinc-800">
+                              <span>{tableGuestCount}N</span>
+                              <Users className="w-3.5 h-3.5 text-zinc-450" />
+                            </div>
+                            <button
+                              onClick={() => setTableGuestCount((count) => Math.min(12, count + 1))}
+                              className="h-11 w-11 bg-white text-zinc-800 border border-zinc-200 font-extrabold rounded-xl hover:border-primary hover:text-primary transition-all active-press flex items-center justify-center text-lg"
+                            >
+                              +
+                            </button>
                           </div>
+                          <button
+                            onClick={() => handleOpenTable(selectedTable.id, tableGuestCount)}
+                            className="mt-3 w-full min-h-[42px] bg-primary hover:bg-primary-hover text-white font-bold rounded-xl text-xs uppercase active-press"
+                          >
+                            Xác nhận mở bàn
+                          </button>
                         </div>
                       ) : (
                         <div className="grid grid-cols-3 gap-2">
@@ -1098,8 +1093,8 @@ function App() {
                                   ? status === 'EMPTY'
                                     ? 'bg-zinc-100 text-zinc-500 border-zinc-300'
                                     : status === 'DINING'
-                                    ? 'bg-white text-black border-orange-300 shadow-inner'
-                                    : 'bg-white text-black border-orange-300 shadow-inner'
+                                    ? 'bg-white text-black border-black shadow-inner'
+                                    : 'bg-white text-black border-black shadow-inner'
                                   : 'bg-white border-zinc-250 text-zinc-600 hover:border-primary/50'
                               }`}
                             >
@@ -1116,7 +1111,25 @@ function App() {
                       <div className="grid grid-cols-2 gap-2 text-xs">
                         <div className="bg-white p-2.5 rounded-xl border border-zinc-100">
                           <span className="text-zinc-400 block text-[9px] font-bold uppercase">Số khách ngồi</span>
-                          <span className="text-sm font-bold text-zinc-800 font-mono">{selectedTable.guests || 'Không'}</span>
+                          {selectedTable.status === 'EMPTY' ? (
+                            <span className="text-sm font-bold text-zinc-800 font-mono">Không</span>
+                          ) : (
+                            <div className="mt-1 flex items-center gap-2">
+                              <button
+                                onClick={() => handleUpdateTableGuests(selectedTable.id, -1)}
+                                className="h-7 w-7 rounded-lg bg-zinc-100 text-zinc-700 font-extrabold"
+                              >
+                                -
+                              </button>
+                              <span className="text-sm font-bold text-zinc-800 font-mono min-w-8 text-center">{selectedTable.guests}N</span>
+                              <button
+                                onClick={() => handleUpdateTableGuests(selectedTable.id, 1)}
+                                className="h-7 w-7 rounded-lg bg-zinc-100 text-zinc-700 font-extrabold"
+                              >
+                                +
+                              </button>
+                            </div>
+                          )}
                         </div>
                         <div className="bg-white p-2.5 rounded-xl border border-zinc-100">
                           <span className="text-zinc-400 block text-[9px] font-bold uppercase">Thời gian ngồi</span>
@@ -1156,12 +1169,22 @@ function App() {
                           </div>
                         ) : (
                           selectedTable.orders.map((item) => (
-                            <div key={item.id} className="bg-white border border-zinc-100 rounded-xl p-3 flex items-center justify-between shadow-sm">
-                              <div className="text-left max-w-[65%]">
+                            <div key={item.id} className="bg-white border border-zinc-100 rounded-xl p-3 flex items-center justify-between gap-3 shadow-sm">
+                              <div className="flex items-center gap-3 min-w-0">
+                                {getDishImage(item) && (
+                                  <img
+                                    src={getDishImage(item)}
+                                    alt={item.name}
+                                    className="h-11 w-11 rounded-lg object-cover border border-zinc-100 shrink-0"
+                                    loading="lazy"
+                                  />
+                                )}
+                                <div className="text-left min-w-0">
                                 <p className="text-xs font-bold text-zinc-800 leading-tight">{item.name}</p>
                                 <span className="text-[10px] text-zinc-400 font-mono mt-0.5 block">
                                   {formatPrice(item.price)} / món
                                 </span>
+                                </div>
                               </div>
                               
                               {/* Quantity Adjustment buttons (touch-friendly min 44px clickable areas) */}
@@ -1248,7 +1271,11 @@ function App() {
 
                   {/* Action 4: Request Bill */}
                   <button
-                    onClick={() => setModalMode('billing')}
+                    onClick={() => {
+                      setSelectedTable(null)
+                      setModalMode('main')
+                      setViewMode('cashier')
+                    }}
                     disabled={selectedTable.orders.length === 0}
                     className="min-h-[44px] flex-[1.5] bg-primary hover:bg-primary-hover text-white font-bold rounded-xl text-xs sm:text-sm tracking-wide uppercase shadow-md shadow-primary/25 transition-all flex items-center justify-center gap-2 active:scale-95 disabled:opacity-50 disabled:pointer-events-none active-press"
                   >
@@ -1307,15 +1334,25 @@ function App() {
                       <div
                         key={item.id}
                         onClick={() => handleAddItemToOrder(item)}
-                        className={`border rounded-xl p-3 flex items-center justify-between hover:border-primary/50 cursor-pointer active:scale-98 transition-all select-none ${
+                        className={`border rounded-xl p-3 flex items-center justify-between gap-3 hover:border-primary/50 cursor-pointer active:scale-98 transition-all select-none ${
                           quantityInCurrent > 0 ? 'bg-primary/5 border-primary/20' : 'bg-white border-zinc-200'
                         }`}
                       >
-                        <div className="text-left">
-                          <p className="text-xs font-bold text-zinc-800 leading-tight">{item.name}</p>
-                          <span className="text-[10px] text-primary font-mono font-bold mt-1 block">
-                            {formatPrice(item.price)}
-                          </span>
+                        <div className="flex items-center gap-3 min-w-0">
+                          {getDishImage(item) && (
+                            <img
+                              src={getDishImage(item)}
+                              alt={item.name}
+                              className="h-12 w-12 rounded-lg object-cover border border-zinc-100 shrink-0"
+                              loading="lazy"
+                            />
+                          )}
+                          <div className="text-left min-w-0">
+                            <p className="text-xs font-bold text-zinc-800 leading-tight">{item.name}</p>
+                            <span className="text-[10px] text-primary font-mono font-bold mt-1 block">
+                              {formatPrice(item.price)}
+                            </span>
+                          </div>
                         </div>
 
                         <div className="flex items-center gap-2 shrink-0 ml-4">
@@ -1613,15 +1650,7 @@ function App() {
           className="flex flex-col items-center gap-1.5 text-gray-500 focus:text-primary transition-all active:scale-90"
         >
           <Utensils className="w-5 h-5" />
-          <span className="text-[10px] font-bold">TẤT CẢ BÀN</span>
-        </button>
-
-        <button 
-          onClick={() => { setActiveFilterTab('vip'); }}
-          className="flex flex-col items-center gap-1.5 text-gray-500 focus:text-primary transition-all active:scale-90"
-        >
-          <Flame className="w-5 h-5 animate-pulse" />
-          <span className="text-[10px] font-bold">PHÒNG VIP</span>
+          <span className="text-[10px] font-bold"></span>
         </button>
 
         <div className="relative -top-5">

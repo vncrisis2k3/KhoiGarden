@@ -5,7 +5,7 @@
   --color-primary: #DC2626;
   --color-primary-hover: #B91C1C;
   --color-primary-light: #FEF2F2;
-  --color-app-bg: #FFFFFF;
+  --color-app-bg: #000000;
   
   /* Luxury statuses and other modern tokens */
   --color-status-empty-bg: #FFFFFF;
@@ -43,7 +43,7 @@
 
 :root {
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  background-color: #FFFFFF;
+  background-color: #000000;
   color: #1A1A1A;
   -webkit-tap-highlight-color: transparent;
 }
@@ -99,7 +99,7 @@ table {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Outfit', sans-serif;
+  font-family: inherit;
 }
 
 /* Custom Glassmorphism styles and transitions */
@@ -146,7 +146,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Red/white application palette with black toolbar surfaces. */
 body {
-  background: #FFFFFF;
+  background: #000000;
 }
 
 :is(#root > div > header, #root > div > main > header, #root > div > nav.fixed.bottom-0, #root > div > aside.w-64, #root > div > aside.admin-sidebar) {
@@ -187,11 +187,22 @@ body {
 
 main,
 .bg-app-bg,
-.bg-\[\#FFF8F6\],
+.bg-\[\#FFF8F6\] {
+  background-color: #000000 !important;
+}
+
 .bg-\[\#FAF6EE\],
 .bg-\[\#FAF6EE\]\/20,
 .bg-\[\#FAF6EE\]\/50 {
   background-color: #FFFFFF !important;
+}
+
+#root :is(.bg-white, .bg-zinc-50, .bg-zinc-50\/30, .bg-gray-50) {
+  background-color: #FFFFFF !important;
+}
+
+#root :is(.text-gray-800, .text-zinc-800, .text-\[\#2C3E50\]) {
+  color: #18181B !important;
 }
 
 .border-\[\#E2D9C8\],

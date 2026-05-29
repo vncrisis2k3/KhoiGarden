@@ -93,7 +93,7 @@ export function CashierDashboard({ onBackToServerView }: CashierDashboardProps) 
     },
     {
       id: 'B-3498',
-      tableName: 'Phòng VIP 1',
+      tableName: 'Bàn VIP1',
       tableId: 'VIP1',
       guests: 8,
       checkInTime: '11:30 SA',
@@ -109,7 +109,7 @@ export function CashierDashboard({ onBackToServerView }: CashierDashboardProps) 
     },
     {
       id: 'B-2591',
-      tableName: 'Phòng VIP 3',
+      tableName: 'Bàn VIP3',
       tableId: 'VIP3',
       guests: 6,
       checkInTime: '12:15 CH',
@@ -509,27 +509,27 @@ export function CashierDashboard({ onBackToServerView }: CashierDashboardProps) 
       <div className="flex-1 flex flex-col lg:flex-row overflow-visible lg:overflow-hidden">
         
         {/* 1. Left Sidebar (35% width) - Queue of active tables requesting bill */}
-        <aside className="w-full lg:w-[35%] bg-white border-b lg:border-b-0 lg:border-r border-[#C0392B]/10 flex flex-col overflow-hidden max-h-[420px] lg:max-h-none">
+        <aside className="w-full lg:w-[35%] bg-black border-b lg:border-b-0 lg:border-r border-[#C0392B]/10 flex flex-col overflow-hidden max-h-[420px] lg:max-h-none">
           
           {/* Queue Search Component */}
-          <div className="p-4 border-b border-gray-100 bg-[#FFF8F6]/20 shrink-0">
-            <h3 className="text-xs font-extrabold text-gray-400 uppercase tracking-widest text-left mb-3">
+          <div className="p-4 border-b border-white/10 bg-zinc-950 shrink-0">
+            <h3 className="text-xs font-extrabold text-white uppercase tracking-widest text-left mb-3">
               Hàng đợi thanh toán ({bills.length})
             </h3>
             <div className="relative">
-              <Search className="absolute left-3 top-2.5 text-gray-400 w-4 h-4" />
+              <Search className="absolute left-3 top-2.5 text-zinc-400 w-4 h-4" />
               <input
                 type="text"
                 placeholder="Tìm theo Bàn hoặc Mã hoá đơn..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="search-input w-full bg-[#FAF6EE] text-xs pl-9 pr-4 py-2.5 rounded-xl border border-[#E2D9C8] focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none transition-all"
+                className="search-input w-full bg-zinc-900 text-white placeholder:text-zinc-500 text-xs pl-9 pr-4 py-2.5 rounded-xl border border-zinc-700 focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none transition-all"
               />
             </div>
           </div>
 
           {/* Queue Scrolling list */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-3">
+          <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-black">
             {filteredBills.length === 0 ? (
               <div className="text-center py-20 text-gray-400">
                 <Receipt className="w-10 h-10 mx-auto mb-2 text-gray-300" />

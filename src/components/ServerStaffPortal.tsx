@@ -18,6 +18,7 @@ interface OrderItem {
   price: number
   quantity: number
   category: 'mains' | 'appetizers' | 'drinks'
+  imageUrl?: string
   status?: 'pending' | 'cooking' | 'served'
 }
 
@@ -50,9 +51,7 @@ export function ServerStaffPortal({
   formatPrice
 }: ServerStaffPortalProps) {
   // Portal States
-  const [selectedTableId, setSelectedTableId] = useState<string>(tables[0]?.id || '')
-  const [activeSection, setActiveSection] = useState<'all' | 'floor_1' | 'floor_2' | 'vip'>('all')
-  const [tableSearch, setTableSearch] = useState<string>('')
+  const [selectedTableId, setSelectedTableId] = useState<string | null>(null)
   
   // Menu Order state (for placing orders)
   const [isAddMenuOpen, setIsAddMenuOpen] = useState<boolean>(false)
@@ -74,12 +73,7 @@ export function ServerStaffPortal({
   // Active table object
   const activeTable = tables.find((t) => t.id === selectedTableId)
 
-  // Filtered tables
-  const filteredTables = tables.filter((table) => {
-    const matchesSection = activeSection === 'all' || table.section === activeSection
-    const matchesSearch = table.name.toLowerCase().includes(tableSearch.toLowerCase())
-    return matchesSection && matchesSearch
-  })
+  const filteredTables = tables
 
   // Open a new table for dining
   const handleOpenTable = () => {
@@ -199,6 +193,9 @@ export function ServerStaffPortal({
     return matchesCategory && matchesSearch
   })
 
+  const getDishImage = (item: Pick<OrderItem, 'id' | 'imageUrl'>) =>
+    item.imageUrl || menuDatabase.find((menuItem) => menuItem.id === item.id)?.imageUrl
+
   // Summary stats for tables
   const stats = {
     total: tables.length,
@@ -228,9 +225,7 @@ export function ServerStaffPortal({
             <div className="text-left">
               <div className="flex items-center gap-2">
                 <span className="font-extrabold text-xl tracking-tight text-primary font-serif">KHÓI BISTRO</span>
-                <span className="text-[9px] bg-primary/10 text-primary font-bold px-2 py-0.5 rounded-full uppercase tracking-widest font-mono">Trang phục vụ</span>
               </div>
-              <p className="text-[10px] text-gray-400 font-bold mt-0.5">Hệ thống báo trạng thái chế biến thời gian thực</p>
             </div>
           </div>
 
@@ -261,59 +256,22 @@ export function ServerStaffPortal({
         {/* Left Side: Table Layout selector (60% width) */}
         <section className="flex-1 flex flex-col gap-4">
           
-          {/* Floor section filters and table search */}
-          <div className="bg-white border border-[#E2D9C8]/60 p-4 rounded-2xl shadow-xs flex flex-col sm:flex-row gap-4 items-center shrink-0">
-            <div className="relative w-full sm:w-52">
-              <Search className="absolute left-3 top-2.5 text-gray-400 w-3.5 h-3.5" />
-              <input
-                type="text"
-                placeholder="Tìm bàn ăn nhanh..."
-                value={tableSearch}
-                onChange={(e) => setTableSearch(e.target.value)}
-                className="search-input w-full bg-[#FAF6EE] text-xs pl-9 pr-4 py-2 rounded-xl border border-[#E2D9C8] focus:outline-none"
-              />
-            </div>
-
-            {/* Section tabs switcher */}
-            <div className="flex gap-1 overflow-x-auto no-scrollbar w-full sm:w-auto">
-              {([
-                { id: 'all', label: 'Tất cả' },
-                { id: 'floor_1', label: 'Tầng 1' },
-                { id: 'floor_2', label: 'Tầng 2' },
-                { id: 'vip', label: 'Phòng VIP' }
-              ] as const).map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveSection(tab.id)}
-                  className={`px-3 py-1.5 rounded-lg text-[10px] font-extrabold uppercase transition-all whitespace-nowrap ${
-                    activeSection === tab.id
-                      ? 'bg-primary text-white'
-                      : 'bg-[#FAF6EE] text-gray-700 hover:text-gray-900 border border-[#E2D9C8]/40'
-                  }`}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
           {/* Grid Layout tables list */}
-          <div className="flex-grow overflow-visible grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 pr-1 pb-4">
+          <div className="flex-grow overflow-visible grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-1.5 pr-1 pb-4">
             {filteredTables.map((table) => {
               const isSelected = table.id === selectedTableId
-              let bgClass = 'bg-white border-orange-400 hover:border-orange-500'
-              let badgeColor = 'bg-white text-black border border-orange-300'
+              let bgClass = 'bg-white border-black hover:border-black'
+              let badgeColor = 'bg-white text-black border border-black'
               let tableTextColor = 'text-black'
-              let metaTextColor = 'text-black'
-              let detailLineClass = 'text-black border-orange-200'
+              let detailLineClass = 'text-black border-black'
               let statusLabel = 'Trống'
 
               if (table.status === 'DINING') {
-                badgeColor = 'bg-white text-black border border-orange-300'
+                badgeColor = 'bg-emerald-600 text-white border border-emerald-700'
                 statusLabel = 'Đang ăn'
               } else if (table.status === 'WAITING_FOOD') {
-                bgClass = 'bg-white border-orange-500 hover:border-orange-600'
-                badgeColor = 'bg-white text-black border border-orange-300'
+                bgClass = 'bg-white border-black hover:border-black'
+                badgeColor = 'bg-yellow-300 text-black border border-yellow-500'
                 statusLabel = 'Đang chờ món'
               }
 
@@ -322,37 +280,38 @@ export function ServerStaffPortal({
                   key={table.id}
                   onClick={() => {
                     setSelectedTableId(table.id)
+                    if (table.status === 'EMPTY') {
+                      setNewGuestCount(2)
+                    }
                     setOrderCart({}) // Clear unsaved orders cart
                   }}
                   className={`border-2 rounded-2xl p-3.5 cursor-pointer relative flex flex-col justify-between text-center select-none shadow-xs transition-all duration-150 ${
-                    isSelected ? 'ring-2 ring-primary border-primary shadow-md bg-white' : bgClass
+                    isSelected ? 'ring-2 ring-black border-black shadow-md bg-white' : bgClass
                   }`}
                 >
                   {/* Alert notification request from customers */}
                   {table.assistanceRequested && (
-                    <span className="absolute -top-1.5 -right-1.5 flex h-3.5 w-3.5">
+                    <span className="absolute -top-2.5 -right-2.5 flex h-6 w-6">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-primary flex items-center justify-center">
-                        <Bell className="w-2 h-2 text-white" />
+                      <span className="relative inline-flex rounded-full h-6 w-6 bg-primary flex items-center justify-center shadow-md shadow-primary/30">
+                        <Bell className="w-3.5 h-3.5 text-white" />
                       </span>
                     </span>
                   )}
 
-                  <span className={`font-serif font-extrabold text-sm ${isSelected ? 'text-primary' : tableTextColor}`}>
+                  <span className={`font-serif font-extrabold text-lg ${isSelected ? 'text-primary' : tableTextColor}`}>
                     {table.name}
                   </span>
                   
-                  <span className={`text-[9px] font-bold block mt-0.5 ${isSelected ? 'text-black' : metaTextColor}`}>
-                    {table.section === 'floor_1' ? 'Tầng 1' : table.section === 'floor_2' ? 'Tầng 2' : 'Phòng VIP'}
-                  </span>
+                  {/* section label removed - show only table name */}
 
-                  <span className={`text-[8px] font-extrabold uppercase px-1.5 py-0.5 rounded-md mt-2 tracking-wide self-center ${badgeColor}`}>
+                  <span className={`text-[10px] font-extrabold uppercase px-2 py-1 rounded-md mt-2 tracking-wide self-center ${badgeColor}`}>
                     {statusLabel}
                   </span>
 
                   {table.status !== 'EMPTY' && (
-                    <div className={`mt-2 text-[9px] font-mono font-bold flex justify-between border-t pt-1.5 ${isSelected ? 'text-black border-orange-200' : detailLineClass}`}>
-                      <span>👤 {table.guests}K</span>
+                    <div className={`mt-2 text-xs font-mono font-bold flex justify-between border-t pt-2 ${isSelected ? 'text-black border-black' : detailLineClass}`}>
+                      <span>👤 {table.guests}N</span>
                       <span>⏱️ {table.duration}p</span>
                     </div>
                   )}
@@ -363,21 +322,31 @@ export function ServerStaffPortal({
 
         </section>
 
-        {/* Right Side: Active table Detail Panel (40% width) */}
-        <section className="w-full lg:w-[40%] bg-white border border-[#E2D9C8]/60 rounded-3xl overflow-hidden flex flex-col shadow-sm shrink-0 min-h-[460px]">
+        {/* Active table detail opens as an overlay. */}
+        {activeTable && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div
+            className="absolute inset-0"
+            onClick={() => {
+              setSelectedTableId(null)
+              setOrderCart({})
+              setIsAddMenuOpen(false)
+            }}
+          ></div>
+        <section className="relative z-10 w-full max-w-2xl max-h-[90vh] bg-white border border-[#E2D9C8]/60 rounded-3xl overflow-hidden flex flex-col shadow-premium-lg min-h-[460px]">
           
           {/* Panel Header */}
           <div className="bg-[#FAF6EE] border-b border-[#E2D9C8]/40 px-5 py-4 flex items-center justify-between text-left shrink-0">
             <div>
               <h3 className="font-extrabold text-base text-gray-800 font-serif leading-none">Chi tiết {activeTable?.name}</h3>
               <p className="text-[10px] text-gray-400 font-bold mt-1 font-mono">
-                {activeTable?.section === 'floor_1' ? 'TẦNG 1' : activeTable?.section === 'floor_2' ? 'TẦNG 2' : 'PHÒNG VIP'}
-                {activeTable?.status !== 'EMPTY' && ` • CA DÙNG BỮA: ${activeTable?.duration} phút`}
+                {activeTable?.status !== 'EMPTY' && `CA DÙNG BỮA: ${activeTable?.duration} phút`}
               </p>
             </div>
 
             {/* Assistance clearing trigger */}
-            {activeTable?.assistanceRequested && (
+            <div className="flex items-center gap-2">
+            {activeTable.assistanceRequested && (
               <button
                 onClick={() => {
                   setTables((prev) =>
@@ -391,6 +360,18 @@ export function ServerStaffPortal({
                 <span>Tắt báo hỗ trợ</span>
               </button>
             )}
+              <button
+                onClick={() => {
+                  setSelectedTableId(null)
+                  setOrderCart({})
+                  setIsAddMenuOpen(false)
+                }}
+                className="h-8 w-8 bg-gray-100 hover:bg-gray-200 text-gray-500 rounded-full flex items-center justify-center transition-all active-press"
+                title="Đóng chi tiết bàn"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
           </div>
 
           {/* Panel Body: if Empty table */}
@@ -452,11 +433,21 @@ export function ServerStaffPortal({
                     const status = item.status || 'pending'
                     return (
                       <div key={item.id} className="py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-left">
-                        <div className="max-w-full sm:max-w-[45%]">
-                          <span className="font-bold text-xs text-gray-800 leading-snug block">{item.name}</span>
-                          <span className="text-[10px] text-gray-400 mt-0.5 font-bold font-mono">
-                            {formatPrice(item.price)} x{item.quantity}
-                          </span>
+                        <div className="flex items-center gap-3 max-w-full sm:max-w-[45%] min-w-0">
+                          {getDishImage(item) && (
+                            <img
+                              src={getDishImage(item)}
+                              alt={item.name}
+                              className="h-11 w-11 rounded-lg object-cover border border-gray-100 shrink-0"
+                              loading="lazy"
+                            />
+                          )}
+                          <div className="min-w-0">
+                            <span className="font-bold text-xs text-gray-800 leading-snug block">{item.name}</span>
+                            <span className="text-[10px] text-gray-400 mt-0.5 font-bold font-mono">
+                              {formatPrice(item.price)} x{item.quantity}
+                            </span>
+                          </div>
                         </div>
 
                         {/* Interactive status selector pills */}
@@ -528,6 +519,8 @@ export function ServerStaffPortal({
           )}
 
         </section>
+        </div>
+        )}
 
       </main>
 
@@ -600,11 +593,21 @@ export function ServerStaffPortal({
                       <div
                         key={item.id}
                         onClick={() => handleAddToCart(item.id)}
-                        className="bg-white border border-gray-200 rounded-xl p-3 flex items-center justify-between hover:border-primary/50 cursor-pointer shadow-xs transition-all active:scale-98 select-none"
+                        className="bg-white border border-gray-200 rounded-xl p-3 flex items-center justify-between gap-3 hover:border-primary/50 cursor-pointer shadow-xs transition-all active:scale-98 select-none"
                       >
-                        <div className="text-left">
-                          <span className="font-bold text-xs text-gray-800 block leading-tight">{item.name}</span>
-                          <span className="text-[10px] text-gray-400 font-mono font-bold mt-1 block">{formatPrice(item.price)}</span>
+                        <div className="flex items-center gap-3 min-w-0">
+                          {getDishImage(item) && (
+                            <img
+                              src={getDishImage(item)}
+                              alt={item.name}
+                              className="h-11 w-11 rounded-lg object-cover border border-gray-100 shrink-0"
+                              loading="lazy"
+                            />
+                          )}
+                          <div className="text-left min-w-0">
+                            <span className="font-bold text-xs text-gray-800 block leading-tight">{item.name}</span>
+                            <span className="text-[10px] text-gray-400 font-mono font-bold mt-1 block">{formatPrice(item.price)}</span>
+                          </div>
                         </div>
 
                         {qtyInCart > 0 ? (
@@ -638,8 +641,18 @@ export function ServerStaffPortal({
                       if (!item) return null
 
                       return (
-                        <div key={itemId} className="py-2.5 flex items-center justify-between text-xs text-left">
-                          <span className="font-bold text-gray-700 leading-snug w-[55%]">{item.name}</span>
+                        <div key={itemId} className="py-2.5 flex items-center justify-between gap-2 text-xs text-left">
+                          <div className="flex items-center gap-2 min-w-0">
+                            {getDishImage(item) && (
+                              <img
+                                src={getDishImage(item)}
+                                alt={item.name}
+                                className="h-8 w-8 rounded-md object-cover border border-gray-100 shrink-0"
+                                loading="lazy"
+                              />
+                            )}
+                            <span className="font-bold text-gray-700 leading-snug min-w-0">{item.name}</span>
+                          </div>
                           
                           <div className="flex items-center gap-1.5 shrink-0 bg-white border border-gray-200 rounded-lg p-0.5">
                             <button
